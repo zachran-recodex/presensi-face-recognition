@@ -10,9 +10,9 @@
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
-                <!-- Email Input -->
+                <!-- Username Input -->
                 <div class="mb-4">
-                    <x-forms.input label="Email" name="email" type="email" placeholder="your@email.com" />
+                    <x-forms.input label="Username" name="username" type="text" placeholder="username" />
                 </div>
 
                 <!-- Password Input -->
