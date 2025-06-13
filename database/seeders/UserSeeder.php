@@ -18,24 +18,9 @@ class UserSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
-        $permissions = [
-            'manage employee',
-            'manage location',
-            'see report',
-        ];
-
-        // Create permissions in the database
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
-
         // Create roles
         $adminRole = Role::create(['name' => 'Admin']);
         $employeeRole = Role::create(['name' => 'Karyawan']);
-
-        // Assign all permissions to admin
-        $adminRole->givePermissionTo($permissions);
 
         // Create users by role
         User::create([
