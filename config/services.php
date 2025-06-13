@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'face_recognition' => [
+        'base_url' => env('FACE_RECOGNITION_BASE_URL', 'https://fr.neoapi.id/risetai/face-api'),
+        'access_token' => env('FACE_RECOGNITION_ACCESS_TOKEN'),
+        'gallery_id' => env('FACE_RECOGNITION_GALLERY_ID', 'attendance_system'),
+    ],
+
 ];
