@@ -1,6 +1,5 @@
 /.phpunit.cache
 /node_modules
-/public/build
 /public/hot
 /public/storage
 /storage/*.key
@@ -21,3 +20,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+vendor.zip
+.DS_Store
+CLAUDE.md
