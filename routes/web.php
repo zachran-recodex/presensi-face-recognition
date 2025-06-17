@@ -52,12 +52,6 @@ Route::middleware(['auth'])->group(function () {
         // Attendance Management
         Route::get('attendance/history', [AttendanceController::class, 'adminHistory'])->name('attendance.history');
 
-        // Reports
-        Route::get('reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
-        Route::get('reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
-        Route::get('reports/daily-summary', [App\Http\Controllers\Admin\ReportController::class, 'dailySummary'])->name('reports.daily-summary');
-        Route::get('reports/monthly-summary', [App\Http\Controllers\Admin\ReportController::class, 'monthlySummary'])->name('reports.monthly-summary');
-        Route::get('reports/location-usage', [App\Http\Controllers\Admin\ReportController::class, 'locationUsage'])->name('reports.location-usage');
     });
 });
 

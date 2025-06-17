@@ -141,7 +141,7 @@
                                     <ul class="list-disc list-inside space-y-1">
                                         <li>{{ __('Users will need to enroll their face after first login') }}</li>
                                         <li>{{ __('Employee ID is used for face recognition - if not provided, user ID will be used') }}</li>
-                                        <li>{{ __('Administrators have full access to manage users, locations, and view reports') }}</li>
+                                        <li>{{ __('Administrators have full access to manage users and locations') }}</li>
                                         <li>{{ __('Regular users can only manage their own attendance and profile') }}</li>
                                     </ul>
                                 </div>
