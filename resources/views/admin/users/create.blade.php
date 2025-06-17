@@ -34,97 +34,71 @@
 
                     <!-- Name -->
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Full Name') }}</label>
-                        <input type="text" 
-                               name="name" 
-                               id="name" 
-                               value="{{ old('name') }}"
-                               required
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('name') border-red-500 @enderror">
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.input 
+                            name="name" 
+                            label="{{ __('Full Name') }}"
+                            :value="old('name')"
+                            required />
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Email Address') }}</label>
-                        <input type="email" 
-                               name="email" 
-                               id="email" 
-                               value="{{ old('email') }}"
-                               required
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('email') border-red-500 @enderror">
-                        @error('email')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.input 
+                            name="email" 
+                            type="email"
+                            label="{{ __('Email Address') }}"
+                            :value="old('email')"
+                            required />
                     </div>
 
                     <!-- Employee ID -->
                     <div>
-                        <label for="employee_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Employee ID') }}</label>
-                        <input type="text" 
-                               name="employee_id" 
-                               id="employee_id" 
-                               value="{{ old('employee_id') }}"
-                               placeholder="{{ __('Optional - will use user ID if not provided') }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('employee_id') border-red-500 @enderror">
-                        @error('employee_id')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.input 
+                            name="employee_id" 
+                            label="{{ __('Employee ID') }}"
+                            :value="old('employee_id')"
+                            placeholder="{{ __('Optional - will use user ID if not provided') }}" />
                     </div>
 
                     <!-- Phone -->
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Phone Number') }}</label>
-                        <input type="text" 
-                               name="phone" 
-                               id="phone" 
-                               value="{{ old('phone') }}"
-                               placeholder="{{ __('Optional') }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('phone') border-red-500 @enderror">
-                        @error('phone')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.input 
+                            name="phone" 
+                            label="{{ __('Phone Number') }}"
+                            :value="old('phone')"
+                            placeholder="{{ __('Optional') }}" />
                     </div>
 
                     <!-- Role -->
                     <div>
-                        <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Role') }}</label>
-                        <select name="role" 
-                                id="role" 
-                                required
-                                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('role') border-red-500 @enderror">
-                            <option value="">{{ __('Select a role') }}</option>
-                            <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>{{ __('User') }}</option>
-                            <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>{{ __('Administrator') }}</option>
-                        </select>
-                        @error('role')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.select 
+                            name="role" 
+                            label="{{ __('Role') }}"
+                            :options="[
+                                'user' => __('User'),
+                                'admin' => __('Administrator')
+                            ]"
+                            :selected="old('role')"
+                            placeholder="{{ __('Select a role') }}"
+                            required />
                     </div>
 
                     <!-- Password -->
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Password') }}</label>
-                        <input type="password" 
-                               name="password" 
-                               id="password" 
-                               required
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('password') border-red-500 @enderror">
-                        @error('password')
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                        @enderror
+                        <x-forms.input 
+                            name="password" 
+                            type="password"
+                            label="{{ __('Password') }}"
+                            required />
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Confirm Password') }}</label>
-                        <input type="password" 
-                               name="password_confirmation" 
-                               id="password_confirmation" 
-                               required
-                               class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <x-forms.input 
+                            name="password_confirmation" 
+                            type="password"
+                            label="{{ __('Confirm Password') }}"
+                            required />
                     </div>
 
                     <!-- Info Box -->
@@ -151,14 +125,19 @@
 
                     <!-- Submit Buttons -->
                     <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ route('admin.users.index') }}" 
-                           class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium">
+                        <x-button 
+                            tag="a" 
+                            href="{{ route('admin.users.index') }}"
+                            type="secondary"
+                            class="px-6">
                             {{ __('Cancel') }}
-                        </a>
-                        <button type="submit" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium">
+                        </x-button>
+                        <x-button 
+                            type="primary" 
+                            buttonType="submit"
+                            class="px-6">
                             {{ __('Create User') }}
-                        </button>
+                        </x-button>
                     </div>
                 </form>
             </div>

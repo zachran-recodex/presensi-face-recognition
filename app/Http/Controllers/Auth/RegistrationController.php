@@ -34,7 +34,7 @@ class RegistrationController extends Controller
 
         // Generate employee ID if not provided
         if (empty($validated['employee_id'])) {
-            $validated['employee_id'] = 'JKN' . str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT);
+            $validated['employee_id'] = 'JKN'.str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT);
         }
 
         event(new Registered(($user = User::create($validated))));

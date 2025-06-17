@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 class FaceRecognitionService
 {
     private string $baseUrl;
+
     private string $accessToken;
+
     private string $faceGalleryId;
 
     public function __construct()
@@ -28,9 +30,9 @@ class FaceRecognitionService
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody(json_encode(['trx_id' => $this->generateTrxId()]), 'application/json')
-              ->get("{$this->baseUrl}/client/get-counters");
+                ->get("{$this->baseUrl}/client/get-counters");
 
             if ($response->successful()) {
                 $result = $response->json();
@@ -38,12 +40,13 @@ class FaceRecognitionService
                 if (isset($result['risetai'])) {
                     return $result['risetai'];
                 }
+
                 return $result;
             }
 
-            throw new \Exception('Failed to get counters: ' . $response->body());
+            throw new \Exception('Failed to get counters: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API get counters error: ' . $e->getMessage());
+            Log::error('Face API get counters error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -56,15 +59,15 @@ class FaceRecognitionService
         try {
             $payload = json_encode([
                 'facegallery_id' => $this->faceGalleryId,
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody($payload, 'application/json')
-              ->post("{$this->baseUrl}/facegallery/create-facegallery");
+                ->post("{$this->baseUrl}/facegallery/create-facegallery");
 
             if ($response->successful()) {
                 $result = $response->json();
@@ -72,19 +75,20 @@ class FaceRecognitionService
                 if (isset($result['risetai'])) {
                     return $result['risetai'];
                 }
+
                 return $result;
             }
 
             // If gallery already exists, that's okay
             $responseData = $response->json();
-            if (isset($responseData['risetai']['status']) && 
+            if (isset($responseData['risetai']['status']) &&
                 ($responseData['risetai']['status'] == '400' || $responseData['risetai']['status'] == '417')) {
                 return ['status' => '200', 'message' => 'Gallery already exists'];
             }
 
-            throw new \Exception('Failed to create face gallery: ' . $response->body());
+            throw new \Exception('Failed to create face gallery: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API create gallery error: ' . $e->getMessage());
+            Log::error('Face API create gallery error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -100,27 +104,28 @@ class FaceRecognitionService
                 'user_name' => $userName,
                 'facegallery_id' => $this->faceGalleryId,
                 'image' => $this->processBase64Image($base64Image),
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             $response = Http::timeout(60)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody($payload, 'application/json')
-              ->post("{$this->baseUrl}/facegallery/enroll-face");
+                ->post("{$this->baseUrl}/facegallery/enroll-face");
 
             if ($response->successful()) {
                 $result = $response->json();
                 if (isset($result['risetai'])) {
                     return $result['risetai'];
                 }
+
                 return $result;
             }
 
-            throw new \Exception('Failed to enroll face: ' . $response->body());
+            throw new \Exception('Failed to enroll face: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API enroll error: ' . $e->getMessage());
+            Log::error('Face API enroll error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -135,27 +140,28 @@ class FaceRecognitionService
                 'user_id' => $userId,
                 'facegallery_id' => $this->faceGalleryId,
                 'image' => $this->processBase64Image($base64Image),
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             $response = Http::timeout(60)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody($payload, 'application/json')
-              ->post("{$this->baseUrl}/facegallery/verify-face");
+                ->post("{$this->baseUrl}/facegallery/verify-face");
 
             if ($response->successful()) {
                 $result = $response->json();
                 if (isset($result['risetai'])) {
                     return $result['risetai'];
                 }
+
                 return $result;
             }
 
-            throw new \Exception('Failed to verify face: ' . $response->body());
+            throw new \Exception('Failed to verify face: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API verify error: ' . $e->getMessage());
+            Log::error('Face API verify error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -168,20 +174,20 @@ class FaceRecognitionService
         try {
             $response = Http::timeout(60)->withHeaders([
                 'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->post("{$this->baseUrl}/facegallery/identify-face", [
                 'facegallery_id' => $this->faceGalleryId,
                 'image' => $base64Image,
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
-            throw new \Exception('Failed to identify face: ' . $response->body());
+            throw new \Exception('Failed to identify face: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API identify error: ' . $e->getMessage());
+            Log::error('Face API identify error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -194,20 +200,20 @@ class FaceRecognitionService
         try {
             $response = Http::withHeaders([
                 'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->delete("{$this->baseUrl}/facegallery/delete-face", [
                 'user_id' => $userId,
                 'facegallery_id' => $this->faceGalleryId,
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
-            throw new \Exception('Failed to delete face: ' . $response->body());
+            throw new \Exception('Failed to delete face: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API delete error: ' . $e->getMessage());
+            Log::error('Face API delete error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -222,12 +228,12 @@ class FaceRecognitionService
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody(json_encode([
                 'facegallery_id' => $this->faceGalleryId,
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]), 'application/json')
-              ->get("{$this->baseUrl}/facegallery/list-faces");
+                ->get("{$this->baseUrl}/facegallery/list-faces");
 
             if ($response->successful()) {
                 $result = $response->json();
@@ -235,12 +241,13 @@ class FaceRecognitionService
                 if (isset($result['risetai'])) {
                     return $result['risetai'];
                 }
+
                 return $result;
             }
 
-            throw new \Exception('Failed to get face list: ' . $response->body());
+            throw new \Exception('Failed to get face list: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API list faces error: ' . $e->getMessage());
+            Log::error('Face API list faces error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -253,20 +260,20 @@ class FaceRecognitionService
         try {
             $response = Http::withHeaders([
                 'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
             ])->post("{$this->baseUrl}/compare-images", [
                 'source_image' => $sourceImage,
                 'target_image' => $targetImage,
-                'trx_id' => $this->generateTrxId()
+                'trx_id' => $this->generateTrxId(),
             ]);
 
             if ($response->successful()) {
                 return $response->json();
             }
 
-            throw new \Exception('Failed to compare images: ' . $response->body());
+            throw new \Exception('Failed to compare images: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API compare error: ' . $e->getMessage());
+            Log::error('Face API compare error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -276,7 +283,7 @@ class FaceRecognitionService
      */
     private function generateTrxId(): string
     {
-        return 'trx_' . time() . '_' . rand(1000, 9999);
+        return 'trx_'.time().'_'.rand(1000, 9999);
     }
 
     /**

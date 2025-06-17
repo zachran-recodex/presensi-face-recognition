@@ -6,12 +6,10 @@ use App\Models\Attendance;
 use App\Models\Location;
 use App\Models\User;
 use App\Services\FaceRecognitionService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
@@ -86,12 +84,13 @@ class AttendanceController extends Controller
                 ->withErrors(['error' => 'You have already checked in today']);
         }
 
-        if (!$user->is_face_enrolled) {
+        if (! $user->is_face_enrolled) {
             return redirect()->route('face.enroll')
                 ->withErrors(['error' => 'Please enroll your face first before attendance']);
         }
 
         $locations = Location::active()->get();
+
         return view('attendance.check-in', compact('locations'));
     }
 
@@ -102,7 +101,7 @@ class AttendanceController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user->hasCheckedInToday()) {
+        if (! $user->hasCheckedInToday()) {
             return redirect()->route('attendance.index')
                 ->withErrors(['error' => 'You need to check in first']);
         }
@@ -113,6 +112,7 @@ class AttendanceController extends Controller
         }
 
         $checkInRecord = $user->getTodayCheckIn();
+
         return view('attendance.check-out', compact('checkInRecord'));
     }
 
@@ -130,28 +130,28 @@ class AttendanceController extends Controller
                 'latitude' => 'nullable|numeric',
                 'longitude' => 'nullable|numeric',
                 'face_image' => 'required|string', // base64 image
-                'notes' => 'nullable|string|max:500'
+                'notes' => 'nullable|string|max:500',
             ]);
 
             // Validate attendance rules
             if ($validated['type'] === 'check_in' && $user->hasCheckedInToday()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You have already checked in today'
+                    'message' => 'You have already checked in today',
                 ], 422);
             }
 
-            if ($validated['type'] === 'check_out' && !$user->hasCheckedInToday()) {
+            if ($validated['type'] === 'check_out' && ! $user->hasCheckedInToday()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You need to check in first'
+                    'message' => 'You need to check in first',
                 ], 422);
             }
 
             if ($validated['type'] === 'check_out' && $user->hasCheckedOutToday()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'You have already checked out today'
+                    'message' => 'You have already checked out today',
                 ], 422);
             }
 
@@ -162,10 +162,10 @@ class AttendanceController extends Controller
 
                 // Check if user is within location radius
                 if (isset($validated['latitude']) && isset($validated['longitude'])) {
-                    if (!$location->isWithinRadius($validated['latitude'], $validated['longitude'])) {
+                    if (! $location->isWithinRadius($validated['latitude'], $validated['longitude'])) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'You are not within the allowed location radius'
+                            'message' => 'You are not within the allowed location radius',
                         ], 422);
                     }
                 }
@@ -189,7 +189,7 @@ class AttendanceController extends Controller
             if ($faceVerification['status'] !== '200') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Face verification failed: ' . ($faceVerification['status_message'] ?? 'Unknown error')
+                    'message' => 'Face verification failed: '.($faceVerification['status_message'] ?? 'Unknown error'),
                 ], 422);
             }
 
@@ -207,25 +207,25 @@ class AttendanceController extends Controller
                 'face_image' => $base64Image,
                 'confidence_level' => $confidenceLevel,
                 'is_verified' => $isVerified,
-                'notes' => $validated['notes'] ?? null
+                'notes' => $validated['notes'] ?? null,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => ucfirst($validated['type']) . ' successful',
+                'message' => ucfirst($validated['type']).' successful',
                 'data' => [
                     'attendance_id' => $attendance->id,
                     'verified' => $isVerified,
                     'confidence_level' => $confidenceLevel,
                     'time' => $attendance->formatted_attendance_time,
-                    'location' => $location->name
-                ]
+                    'location' => $location->name,
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Attendance processing failed: ' . $e->getMessage()
+                'message' => 'Attendance processing failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -335,7 +335,7 @@ class AttendanceController extends Controller
         $attendances = $query->orderBy('attendance_time', 'desc')->get();
 
         $format = $request->get('export', 'csv');
-        $filename = 'attendance_report_' . now()->format('Y-m-d_H-i-s');
+        $filename = 'attendance_report_'.now()->format('Y-m-d_H-i-s');
 
         if ($format === 'csv') {
             return $this->exportAsCsv($attendances, $filename);
@@ -356,7 +356,7 @@ class AttendanceController extends Controller
             'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
         ];
 
-        $callback = function() use ($attendances) {
+        $callback = function () use ($attendances) {
             $file = fopen('php://output', 'w');
 
             // CSV Headers
@@ -372,7 +372,7 @@ class AttendanceController extends Controller
                 'Verified',
                 'Confidence Level',
                 'Notes',
-                'Created At'
+                'Created At',
             ]);
 
             // CSV Data
@@ -387,9 +387,9 @@ class AttendanceController extends Controller
                     $attendance->location->name ?? 'N/A',
                     $attendance->location->address ?? 'N/A',
                     $attendance->is_verified ? 'Yes' : 'No',
-                    $attendance->confidence_level ? number_format($attendance->confidence_level * 100, 2) . '%' : 'N/A',
+                    $attendance->confidence_level ? number_format($attendance->confidence_level * 100, 2).'%' : 'N/A',
                     $attendance->notes ?: '',
-                    $attendance->created_at->format('Y-m-d H:i:s')
+                    $attendance->created_at->format('Y-m-d H:i:s'),
                 ]);
             }
 
@@ -406,7 +406,7 @@ class AttendanceController extends Controller
     {
         // For simplicity, we'll use CSV format with .xlsx extension
         // In a real application, you might want to use a library like PhpSpreadsheet
-        return $this->exportAsCsv($attendances, $filename . '.xlsx');
+        return $this->exportAsCsv($attendances, $filename.'.xlsx');
     }
 
     /**
@@ -417,11 +417,12 @@ class AttendanceController extends Controller
         $user = auth()->user();
 
         // Regular users can only view their own attendance
-        if (!$user->isAdmin() && $attendance->user_id !== $user->id) {
+        if (! $user->isAdmin() && $attendance->user_id !== $user->id) {
             abort(403, 'Unauthorized access');
         }
 
         $attendance->load(['user', 'location']);
+
         return view('attendance.show', compact('attendance'));
     }
 }

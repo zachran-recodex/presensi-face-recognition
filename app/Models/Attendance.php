@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class Attendance extends Model
 {
@@ -21,7 +21,7 @@ class Attendance extends Model
         'face_image',
         'confidence_level',
         'is_verified',
-        'notes'
+        'notes',
     ];
 
     protected $casts = [
@@ -29,7 +29,7 @@ class Attendance extends Model
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'confidence_level' => 'decimal:2',
-        'is_verified' => 'boolean'
+        'is_verified' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -51,7 +51,7 @@ class Attendance extends Model
     {
         return $query->whereBetween('attendance_time', [
             Carbon::now()->startOfWeek(),
-            Carbon::now()->endOfWeek()
+            Carbon::now()->endOfWeek(),
         ]);
     }
 

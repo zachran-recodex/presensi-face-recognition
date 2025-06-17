@@ -3,12 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -29,7 +29,7 @@ class User extends Authenticatable
         'phone',
         'face_image',
         'is_face_enrolled',
-        'face_gallery_id'
+        'face_gallery_id',
     ];
 
     /**
@@ -40,7 +40,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'face_image'
+        'face_image',
     ];
 
     /**
@@ -53,7 +53,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_face_enrolled' => 'boolean'
+            'is_face_enrolled' => 'boolean',
         ];
     }
 

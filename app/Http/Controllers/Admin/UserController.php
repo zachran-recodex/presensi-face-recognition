@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\FaceRecognitionService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Validation\Rules;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
@@ -32,8 +32,8 @@ class UserController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('employee_id', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('employee_id', 'like', "%{$search}%");
             });
         }
 
@@ -96,9 +96,9 @@ class UserController extends Controller
     public function show(User $user): View
     {
         $user->load([
-            'attendances' => function($query) {
+            'attendances' => function ($query) {
                 $query->with('location')->latest()->take(10);
-            }
+            },
         ]);
 
         // Get user statistics
@@ -127,14 +127,14 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'employee_id' => ['nullable', 'string', 'max:50', 'unique:users,employee_id,' . $user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'employee_id' => ['nullable', 'string', 'max:50', 'unique:users,employee_id,'.$user->id],
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:admin,user'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
@@ -173,10 +173,10 @@ class UserController extends Controller
         if ($user->is_face_enrolled) {
             try {
                 $userId = $user->employee_id ?: $user->id;
-                $this->faceService->deleteFace((string)$userId);
+                $this->faceService->deleteFace((string) $userId);
             } catch (\Exception $e) {
                 // Log error but continue with user deletion
-                \Log::warning('Failed to delete face enrollment for user ' . $user->id . ': ' . $e->getMessage());
+                \Log::warning('Failed to delete face enrollment for user '.$user->id.': '.$e->getMessage());
             }
         }
 
@@ -191,7 +191,7 @@ class UserController extends Controller
      */
     public function resetFaceEnrollment(User $user): RedirectResponse
     {
-        if (!$user->is_face_enrolled) {
+        if (! $user->is_face_enrolled) {
             return redirect()->route('admin.users.show', $user)
                 ->withErrors(['error' => 'User does not have face enrollment to reset']);
         }
@@ -199,13 +199,13 @@ class UserController extends Controller
         try {
             // Delete from face recognition service
             $userId = $user->employee_id ?: $user->id;
-            $this->faceService->deleteFace((string)$userId);
+            $this->faceService->deleteFace((string) $userId);
 
             // Update user record
             $user->update([
                 'face_image' => null,
                 'is_face_enrolled' => false,
-                'face_gallery_id' => null
+                'face_gallery_id' => null,
             ]);
 
             return redirect()->route('admin.users.show', $user)
@@ -213,7 +213,7 @@ class UserController extends Controller
 
         } catch (\Exception $e) {
             return redirect()->route('admin.users.show', $user)
-                ->withErrors(['error' => 'Failed to reset face enrollment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to reset face enrollment: '.$e->getMessage()]);
         }
     }
 

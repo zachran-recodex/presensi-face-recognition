@@ -16,13 +16,13 @@ class Location extends Model
         'latitude',
         'longitude',
         'radius',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public function attendances(): HasMany
@@ -40,7 +40,7 @@ class Location extends Model
      */
     public function isWithinRadius(float $userLatitude, float $userLongitude): bool
     {
-        if (!$this->latitude || !$this->longitude) {
+        if (! $this->latitude || ! $this->longitude) {
             return true; // Skip location validation if coordinates not set
         }
 

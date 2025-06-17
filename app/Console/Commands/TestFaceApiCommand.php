@@ -36,9 +36,10 @@ class TestFaceApiCommand extends Command
         $this->info('=====================================');
 
         // Check if API credentials are configured
-        if (!config('services.biznet_face.access_token')) {
+        if (! config('services.biznet_face.access_token')) {
             $this->error('❌ Face API access token is not configured in .env file');
             $this->info('Please set BIZNET_FACE_ACCESS_TOKEN in your .env file');
+
             return self::FAILURE;
         }
 
@@ -54,6 +55,7 @@ class TestFaceApiCommand extends Command
             $this->listFaces($faceService);
         } else {
             $this->info('Please specify an option. Use --help for available options.');
+
             return self::INVALID;
         }
 
@@ -83,33 +85,33 @@ class TestFaceApiCommand extends Command
     private function testConnection(FaceRecognitionService $faceService): void
     {
         $this->info('🔗 Testing API Connection...');
-        
+
         // Show current configuration
         $baseUrl = config('services.biznet_face.base_url');
         $accessToken = config('services.biznet_face.access_token');
         $galleryId = config('services.biznet_face.face_gallery_id');
-        
-        $this->info('   Base URL: ' . $baseUrl);
-        $this->info('   Access Token: ' . ($accessToken ? substr($accessToken, 0, 10) . '...' : 'NOT SET'));
-        $this->info('   Gallery ID: ' . $galleryId);
+
+        $this->info('   Base URL: '.$baseUrl);
+        $this->info('   Access Token: '.($accessToken ? substr($accessToken, 0, 10).'...' : 'NOT SET'));
+        $this->info('   Gallery ID: '.$galleryId);
 
         try {
             $result = $faceService->getCounters();
 
             if (isset($result['status']) && $result['status'] == '200') {
                 $this->info('✅ API connection successful!');
-                $this->info('   Status: ' . $result['status']);
-                $this->info('   Message: ' . ($result['status_message'] ?? 'Success'));
+                $this->info('   Status: '.$result['status']);
+                $this->info('   Message: '.($result['status_message'] ?? 'Success'));
             } else {
                 $this->error('❌ API connection failed');
-                $this->error('   Status: ' . ($result['status'] ?? 'Unknown'));
-                $this->error('   Message: ' . ($result['status_message'] ?? 'Unknown error'));
-                $this->error('   Full Response: ' . json_encode($result));
+                $this->error('   Status: '.($result['status'] ?? 'Unknown'));
+                $this->error('   Message: '.($result['status_message'] ?? 'Unknown error'));
+                $this->error('   Full Response: '.json_encode($result));
             }
         } catch (\Exception $e) {
-            $this->error('❌ Connection test failed: ' . $e->getMessage());
-            $this->error('   Exception class: ' . get_class($e));
-            
+            $this->error('❌ Connection test failed: '.$e->getMessage());
+            $this->error('   Exception class: '.get_class($e));
+
             // Let's try a manual curl-like test
             $this->info('🔧 Trying manual curl test...');
             $this->testWithCurl();
@@ -139,11 +141,11 @@ class TestFaceApiCommand extends Command
                 }
             } else {
                 $this->error('❌ Failed to get counters');
-                $this->error('   Status: ' . ($result['status'] ?? 'Unknown'));
-                $this->error('   Message: ' . ($result['status_message'] ?? 'Unknown error'));
+                $this->error('   Status: '.($result['status'] ?? 'Unknown'));
+                $this->error('   Message: '.($result['status_message'] ?? 'Unknown error'));
             }
         } catch (\Exception $e) {
-            $this->error('❌ Failed to get counters: ' . $e->getMessage());
+            $this->error('❌ Failed to get counters: '.$e->getMessage());
         }
     }
 
@@ -157,23 +159,23 @@ class TestFaceApiCommand extends Command
 
             if (isset($result['status']) && ($result['status'] == '200' || strpos($result['message'] ?? '', 'already exists') !== false)) {
                 $this->info('✅ Face gallery is ready!');
-                $this->info('   Gallery ID: ' . $galleryId);
-                $this->info('   Status: ' . ($result['status'] ?? 'Unknown'));
+                $this->info('   Gallery ID: '.$galleryId);
+                $this->info('   Status: '.($result['status'] ?? 'Unknown'));
                 if (isset($result['message'])) {
-                    $this->info('   Message: ' . $result['message']);
+                    $this->info('   Message: '.$result['message']);
                 }
             } else {
                 $this->warn('⚠️  Gallery creation response:');
-                $this->info('   Status: ' . ($result['status'] ?? 'Unknown'));
-                $this->info('   Message: ' . ($result['status_message'] ?? 'Unknown error'));
-                
+                $this->info('   Status: '.($result['status'] ?? 'Unknown'));
+                $this->info('   Message: '.($result['status_message'] ?? 'Unknown error'));
+
                 // Status 417 means gallery already exists, which is fine
                 if (isset($result['status']) && $result['status'] == '417') {
                     $this->info('✅ Face gallery already exists (which is fine)');
                 }
             }
         } catch (\Exception $e) {
-            $this->error('❌ Gallery creation failed: ' . $e->getMessage());
+            $this->error('❌ Gallery creation failed: '.$e->getMessage());
         }
     }
 
@@ -194,13 +196,13 @@ class TestFaceApiCommand extends Command
                         $this->warn('⚠️  No faces enrolled in the gallery yet');
                         $this->info('   Users need to enroll their faces through the application');
                     } else {
-                        $this->info("   Found " . count($faces) . " enrolled face(s):");
+                        $this->info('   Found '.count($faces).' enrolled face(s):');
 
                         $tableData = [];
                         foreach ($faces as $face) {
                             $tableData[] = [
                                 'User ID' => $face['user_id'] ?? 'N/A',
-                                'User Name' => $face['user_name'] ?? 'N/A'
+                                'User Name' => $face['user_name'] ?? 'N/A',
                             ];
                         }
 
@@ -217,12 +219,12 @@ class TestFaceApiCommand extends Command
                     $this->info('   Users can enroll their faces through the web interface');
                 } else {
                     $this->error('❌ Failed to list faces');
-                    $this->error('   Status: ' . ($result['status'] ?? 'Unknown'));
-                    $this->error('   Message: ' . ($result['status_message'] ?? 'Unknown error'));
+                    $this->error('   Status: '.($result['status'] ?? 'Unknown'));
+                    $this->error('   Message: '.($result['status_message'] ?? 'Unknown error'));
                 }
             }
         } catch (\Exception $e) {
-            $this->error('❌ Face listing failed: ' . $e->getMessage());
+            $this->error('❌ Face listing failed: '.$e->getMessage());
         }
     }
 
@@ -230,7 +232,7 @@ class TestFaceApiCommand extends Command
     {
         $baseUrl = config('services.biznet_face.base_url');
         $accessToken = config('services.biznet_face.access_token');
-        $trxId = 'trx_' . time() . '_' . rand(1000, 9999);
+        $trxId = 'trx_'.time().'_'.rand(1000, 9999);
 
         $this->info('   Testing different approaches...');
 
@@ -238,9 +240,9 @@ class TestFaceApiCommand extends Command
         try {
             $this->info('   1. Simple GET:');
             $response = Http::timeout(30)->get("{$baseUrl}/client/get-counters");
-            $this->info('   Status: ' . $response->status() . ' | Body: ' . substr($response->body(), 0, 100));
+            $this->info('   Status: '.$response->status().' | Body: '.substr($response->body(), 0, 100));
         } catch (\Exception $e) {
-            $this->error('   GET test failed: ' . $e->getMessage());
+            $this->error('   GET test failed: '.$e->getMessage());
         }
 
         // Test 2: GET with token header
@@ -249,9 +251,9 @@ class TestFaceApiCommand extends Command
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $accessToken,
             ])->get("{$baseUrl}/client/get-counters");
-            $this->info('   Status: ' . $response->status() . ' | Body: ' . substr($response->body(), 0, 100));
+            $this->info('   Status: '.$response->status().' | Body: '.substr($response->body(), 0, 100));
         } catch (\Exception $e) {
-            $this->error('   GET with token test failed: ' . $e->getMessage());
+            $this->error('   GET with token test failed: '.$e->getMessage());
         }
 
         // Test 3: Try GET with empty JSON body (unusual but some APIs need this)
@@ -260,12 +262,12 @@ class TestFaceApiCommand extends Command
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody('{}', 'application/json')
-              ->get("{$baseUrl}/client/get-counters");
-            $this->info('   Status: ' . $response->status() . ' | Body: ' . substr($response->body(), 0, 200));
+                ->get("{$baseUrl}/client/get-counters");
+            $this->info('   Status: '.$response->status().' | Body: '.substr($response->body(), 0, 200));
         } catch (\Exception $e) {
-            $this->error('   GET with empty JSON test failed: ' . $e->getMessage());
+            $this->error('   GET with empty JSON test failed: '.$e->getMessage());
         }
 
         // Test 4: Try GET with trx_id in JSON body
@@ -274,12 +276,12 @@ class TestFaceApiCommand extends Command
             $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $accessToken,
                 'Content-Type' => 'application/json',
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ])->withBody(json_encode(['trx_id' => $trxId]), 'application/json')
-              ->get("{$baseUrl}/client/get-counters");
-            $this->info('   Status: ' . $response->status() . ' | Body: ' . substr($response->body(), 0, 200));
+                ->get("{$baseUrl}/client/get-counters");
+            $this->info('   Status: '.$response->status().' | Body: '.substr($response->body(), 0, 200));
         } catch (\Exception $e) {
-            $this->error('   GET with JSON trx_id test failed: ' . $e->getMessage());
+            $this->error('   GET with JSON trx_id test failed: '.$e->getMessage());
         }
     }
 }
