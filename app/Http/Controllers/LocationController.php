@@ -117,4 +117,27 @@ class LocationController extends Controller
         return redirect()->route('admin.locations.index')
             ->with('status', "Location {$status} successfully");
     }
+
+    /**
+     * Validate coordinates and return location info
+     */
+    public function validateCoordinates(Request $request)
+    {
+        $validated = $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'radius' => 'nullable|integer|min:1|max:10000'
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'coordinates' => [
+                'latitude' => (float) $validated['latitude'],
+                'longitude' => (float) $validated['longitude'],
+                'formatted' => number_format($validated['latitude'], 6) . ', ' . number_format($validated['longitude'], 6)
+            ],
+            'radius' => $validated['radius'] ?? 100,
+            'message' => 'Coordinates are valid'
+        ]);
+    }
 }

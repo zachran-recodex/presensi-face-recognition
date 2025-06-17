@@ -69,6 +69,14 @@
                             </button>
                         </div>
 
+                        <!-- Interactive Map -->
+                        <div class="mb-4">
+                            <div id="map" class="h-64 w-full border border-gray-300 dark:border-gray-600 rounded-lg"></div>
+                            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                                {{ __('Click on the map to set location coordinates') }}
+                            </p>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="latitude" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -156,29 +164,128 @@
         </div>
     </div>
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
     <script>
+        let map;
+        let marker;
+        let radiusCircle;
+
         document.addEventListener('DOMContentLoaded', function() {
             const getCurrentLocationBtn = document.getElementById('getCurrentLocation');
             const latitudeInput = document.getElementById('latitude');
             const longitudeInput = document.getElementById('longitude');
+            const radiusInput = document.getElementById('radius');
+
+            // Initialize map
+            initializeMap();
 
             getCurrentLocationBtn.addEventListener('click', getCurrentLocation);
 
-            // Watch for coordinate changes to show location status
-            latitudeInput.addEventListener('input', updateLocationStatus);
-            longitudeInput.addEventListener('input', updateLocationStatus);
-
-            // Initial status update
-            updateLocationStatus();
+            // Watch for coordinate changes
+            latitudeInput.addEventListener('input', updateFromInputs);
+            longitudeInput.addEventListener('input', updateFromInputs);
+            radiusInput.addEventListener('input', updateRadius);
         });
+
+        function initializeMap() {
+            // Get existing coordinates or use default (Jakarta, Indonesia)
+            const existingLat = document.getElementById('latitude').value;
+            const existingLng = document.getElementById('longitude').value;
+            const defaultLat = existingLat || -6.2;
+            const defaultLng = existingLng || 106.816666;
+            
+            map = L.map('map').setView([defaultLat, defaultLng], existingLat && existingLng ? 15 : 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add click event to map
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                
+                updateCoordinates(lat, lng);
+            });
+
+            // Initialize with existing coordinates if any
+            if (existingLat && existingLng) {
+                updateCoordinates(parseFloat(existingLat), parseFloat(existingLng));
+            }
+        }
+
+        function updateCoordinates(lat, lng) {
+            // Update input fields
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lng.toFixed(6);
+            
+            // Update map marker
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            
+            marker = L.marker([lat, lng]).addTo(map)
+                .bindPopup(`Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`)
+                .openPopup();
+            
+            // Update radius circle
+            updateRadius();
+            updateLocationStatus();
+        }
+
+        function updateRadius() {
+            const radiusValue = document.getElementById('radius').value || 100;
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+            
+            if (lat && lng) {
+                // Remove existing circle
+                if (radiusCircle) {
+                    map.removeLayer(radiusCircle);
+                }
+                
+                // Add new circle
+                radiusCircle = L.circle([lat, lng], {
+                    color: 'blue',
+                    fillColor: '#30f',
+                    fillOpacity: 0.1,
+                    radius: parseInt(radiusValue)
+                }).addTo(map);
+                
+                updateLocationStatus();
+            }
+        }
+
+        function updateFromInputs() {
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+            
+            if (lat && lng && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+                updateCoordinates(parseFloat(lat), parseFloat(lng));
+                map.setView([lat, lng], 15);
+            } else {
+                updateLocationStatus();
+            }
+        }
 
         function getCurrentLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
-                        document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
-                        updateLocationStatus();
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        updateCoordinates(lat, lng);
+                        map.setView([lat, lng], 15);
                     },
                     (error) => {
                         alert('{{ __("Unable to get your location. Please enter coordinates manually.") }}');
@@ -205,7 +312,7 @@
                 const infoDiv = document.getElementById('locationInfo');
 
                 statusDiv.classList.remove('hidden');
-                infoDiv.className = 'p-4 border rounded-lg bg-blue-50 border-blue-200 text-blue-800';
+                infoDiv.className = 'p-4 border rounded-lg bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-200';
                 infoDiv.innerHTML = `
                     <div class="flex items-center">
                         <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">

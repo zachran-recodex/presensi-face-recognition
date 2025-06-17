@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         // Location Management
         Route::resource('locations', LocationController::class);
         Route::post('locations/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('locations.toggle-status');
+        Route::post('locations/validate-coordinates', [LocationController::class, 'validateCoordinates'])->name('locations.validate-coordinates');
 
         // User Management
         Route::resource('users', App\Http\Controllers\Admin\UserController::class);
