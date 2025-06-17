@@ -5,7 +5,7 @@
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Register') }}</h1>
                 <p class="text-gray-600 dark:text-gray-400 mt-1">
-                    {{ __('Enter your details below to create your account') }}
+                    {{ __('Create your attendance account') }}
                 </p>
             </div>
 
@@ -21,6 +21,17 @@
                     <x-forms.input label="Email" name="email" type="email" placeholder="your@email.com" />
                 </div>
 
+                <!-- Employee ID Input -->
+                <div class="mb-4">
+                    <x-forms.input label="Employee ID (Optional)" name="employee_id" type="text" placeholder="EMP001" />
+                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Leave empty to auto-generate') }}</p>
+                </div>
+
+                <!-- Phone Input -->
+                <div class="mb-4">
+                    <x-forms.input label="Phone Number (Optional)" name="phone" type="tel" placeholder="+62812345678" />
+                </div>
+
                 <!-- Password Input -->
                 <div class="mb-4">
                     <x-forms.input label="Password" name="password" type="password" placeholder="••••••••" />
@@ -29,7 +40,7 @@
                 <!-- Confirm Password Input -->
                 <div class="mb-4">
                     <x-forms.input label="Confirm Password" name="password_confirmation" type="password"
-                        placeholder="••••••••" />
+                                   placeholder="••••••••" />
                 </div>
 
                 <!-- Register Button -->
@@ -41,7 +52,7 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400">
                     Already have an account?
                     <a href="{{ route('login') }}"
-                        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">{{ __('Sign in') }}</a>
+                       class="text-blue-600 dark:text-blue-400 hover:underline font-medium">{{ __('Sign in') }}</a>
                 </p>
             </div>
         </div>

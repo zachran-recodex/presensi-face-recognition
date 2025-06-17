@@ -9,16 +9,8 @@ use Illuminate\View\View;
 
 class LocationController extends Controller
 {
-    public function __construct()
-    {
-        // Only admin can access location management
-        $this->middleware(function ($request, $next) {
-            if (!auth()->user()->isAdmin()) {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
-    }
+    // Admin middleware is already applied in routes/web.php
+    // No need for constructor middleware
 
     /**
      * Display a listing of locations

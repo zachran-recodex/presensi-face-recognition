@@ -127,11 +127,27 @@
         }
 
         function capturePhoto() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0);
+            // Set reasonable dimensions for face recognition (max 640x480)
+            const maxWidth = 640;
+            const maxHeight = 480;
+            
+            let { videoWidth, videoHeight } = video;
+            
+            // Calculate scaling to fit within max dimensions
+            const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
+            
+            canvas.width = videoWidth * scale;
+            canvas.height = videoHeight * scale;
+            
+            // Draw scaled image
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+            // Use lower quality to reduce file size (0.4 = 40% quality)
+            capturedImageData = canvas.toDataURL('image/jpeg', 0.4);
+
+            // Log image size for debugging
+            const imageSizeKB = Math.round(capturedImageData.length * 0.75 / 1024); // Approximate KB
+            console.log(`Captured image size: ~${imageSizeKB}KB`);
 
             // Show preview
             document.getElementById('capturedImage').src = capturedImageData;
@@ -182,16 +198,29 @@
             submitBtn.disabled = true;
 
             try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    showMessage('CSRF token not found. Please refresh the page.', 'error');
+                    return;
+                }
+
                 const response = await fetch('{{ route("face.enroll.store") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         face_image: capturedImageData
                     })
                 });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('HTTP Error:', response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
 
                 const data = await response.json();
 
@@ -201,10 +230,17 @@
                         window.location.href = '{{ route("dashboard") }}';
                     }, 2000);
                 } else {
-                    showMessage(data.message, 'error');
+                    showMessage(data.message || 'Face enrollment failed', 'error');
                 }
             } catch (error) {
-                showMessage('Network error. Please try again.', 'error');
+                console.error('Enrollment error:', error);
+                if (error.message.includes('HTTP')) {
+                    showMessage(`Server error: ${error.message}`, 'error');
+                } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showMessage('Network connection error. Please check your internet connection.', 'error');
+                } else {
+                    showMessage(`Error: ${error.message}`, 'error');
+                }
             } finally {
                 loadingState.classList.add('hidden');
                 submitBtn.disabled = false;

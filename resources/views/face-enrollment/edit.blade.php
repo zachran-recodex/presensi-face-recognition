@@ -199,11 +199,22 @@
         }
 
         function testFaceRecognition() {
-            testCanvas.width = testVideo.videoWidth;
-            testCanvas.height = testVideo.videoHeight;
-            testCtx.drawImage(testVideo, 0, 0);
+            // Set reasonable dimensions for face recognition (max 640x480)
+            const maxWidth = 640;
+            const maxHeight = 480;
+            
+            let { videoWidth, videoHeight } = testVideo;
+            
+            // Calculate scaling to fit within max dimensions
+            const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
+            
+            testCanvas.width = videoWidth * scale;
+            testCanvas.height = videoHeight * scale;
+            
+            // Draw scaled image
+            testCtx.drawImage(testVideo, 0, 0, testCanvas.width, testCanvas.height);
 
-            const imageData = testCanvas.toDataURL('image/jpeg', 0.8);
+            const imageData = testCanvas.toDataURL('image/jpeg', 0.4);
 
             // Test face recognition
             testCurrentFace(imageData);
@@ -297,11 +308,23 @@
         }
 
         function capturePhoto() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0);
+            // Set reasonable dimensions for face recognition (max 640x480)
+            const maxWidth = 640;
+            const maxHeight = 480;
+            
+            let { videoWidth, videoHeight } = video;
+            
+            // Calculate scaling to fit within max dimensions
+            const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
+            
+            canvas.width = videoWidth * scale;
+            canvas.height = videoHeight * scale;
+            
+            // Draw scaled image
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-            capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+            // Use lower quality to reduce file size (0.4 = 40% quality)
+            capturedImageData = canvas.toDataURL('image/jpeg', 0.4);
 
             // Show preview
             document.getElementById('capturedImage').src = capturedImageData;

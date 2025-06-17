@@ -16,12 +16,12 @@ class DatabaseSeeder extends Seeder
     {
         // Create admin user
         $admin = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'name' => 'Zachran Razendra',
+            'email' => 'zachranraze@recodex.id',
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
-            'employee_id' => 'ADM001',
+            'employee_id' => 'JKN000',
             'phone' => '+62812345678',
         ]);
 
@@ -30,19 +30,19 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
-                'employee_id' => 'EMP001',
+                'employee_id' => 'JKN001',
                 'phone' => '+62812345679',
             ],
             [
                 'name' => 'Jane Smith',
                 'email' => 'jane@example.com',
-                'employee_id' => 'EMP002',
+                'employee_id' => 'JKN002',
                 'phone' => '+62812345680',
             ],
             [
                 'name' => 'Bob Johnson',
                 'email' => 'bob@example.com',
-                'employee_id' => 'EMP003',
+                'employee_id' => 'JKN003',
                 'phone' => '+62812345681',
             ],
         ];
@@ -62,44 +62,20 @@ class DatabaseSeeder extends Seeder
         // Create sample locations
         $locations = [
             [
-                'name' => 'Main Office',
-                'address' => 'Jl. Sudirman No. 123, Jakarta Pusat, DKI Jakarta 10110, Indonesia',
-                'latitude' => -6.200000,
-                'longitude' => 106.816666,
-                'radius' => 100,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Branch Office Bandung',
-                'address' => 'Jl. Asia Afrika No. 456, Bandung, Jawa Barat 40111, Indonesia',
-                'latitude' => -6.917464,
-                'longitude' => 107.619123,
-                'radius' => 150,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Warehouse Surabaya',
-                'address' => 'Jl. Raya Industri No. 789, Surabaya, Jawa Timur 60111, Indonesia',
-                'latitude' => -7.257472,
-                'longitude' => 112.752090,
-                'radius' => 200,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Remote Work Hub',
-                'address' => 'Virtual Location for Remote Workers',
-                'latitude' => null,
-                'longitude' => null,
+                'name' => 'Telkom University',
+                'address' => 'Jl. Telekomunikasi No. 1, Bandung Terusan Buahbatu - Bojongsoang, Sukapura, Kec. Dayeuhkolot, Kabupaten Bandung, Jawa Barat 40257',
+                'latitude' => -6.973046375031589,
+                'longitude' => 107.63031802195427,
                 'radius' => 1000,
                 'is_active' => true,
             ],
             [
-                'name' => 'Training Center (Inactive)',
-                'address' => 'Jl. Pendidikan No. 321, Yogyakarta, DIY 55111, Indonesia',
-                'latitude' => -7.795580,
-                'longitude' => 110.369492,
+                'name' => 'C57 Heavens House',
+                'address' => 'Unnamed Road Blk. C No.101, Lengkong, Bojongsoang, Bandung Regency, West Java 40287',
+                'latitude' => -6.972749080623897,
+                'longitude' => 107.6387899118546,
                 'radius' => 100,
-                'is_active' => false,
+                'is_active' => true,
             ],
         ];
 
@@ -110,15 +86,12 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Database seeded successfully!');
         $this->command->info('');
         $this->command->info('Default accounts created:');
-        $this->command->info('Admin: admin@example.com / password');
+        $this->command->info('Admin: zachranraze@recodex.id / admin123');
         $this->command->info('Users: john@example.com, jane@example.com, bob@example.com / password');
         $this->command->info('');
         $this->command->info('Sample locations created:');
-        $this->command->info('- Main Office (Jakarta)');
-        $this->command->info('- Branch Office (Bandung)');
-        $this->command->info('- Warehouse (Surabaya)');
-        $this->command->info('- Remote Work Hub (No coordinates)');
-        $this->command->info('- Training Center (Inactive)');
+        $this->command->info('- Telkom University');
+        $this->command->info('- C57 Heavens House');
         $this->command->info('');
         $this->command->warn('Remember to:');
         $this->command->warn('1. Update your .env file with Biznet Face API credentials');

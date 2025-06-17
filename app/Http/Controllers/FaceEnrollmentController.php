@@ -44,31 +44,50 @@ class FaceEnrollmentController extends Controller
                 'face_image' => 'required|string', // base64 image
             ]);
 
+            // Check if user is already enrolled
+            if ($user->is_face_enrolled) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Face is already enrolled. Use the update option instead.'
+                ], 422);
+            }
+
             // Process face image
             $base64Image = $this->faceService->processBase64Image($validated['face_image']);
+            
+            // Validate image size (prevent overly large images)
+            // Base64 encoded images are ~33% larger than original
+            // Limit to 1.5MB base64 (~1MB original) to stay under PHP limits
+            if (strlen($base64Image) > 1500000) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image is too large. Please capture a smaller image.'
+                ], 422);
+            }
 
             // Create face gallery if not exists
-            $this->faceService->createFaceGallery();
-
+            $galleryResult = $this->faceService->createFaceGallery();
+            
             // Enroll face
-            $userId = $user->employee_id ?: $user->id;
+            $userId = (string)($user->employee_id ?: $user->id);
             $enrollmentResult = $this->faceService->enrollFace(
                 $userId,
                 $user->name,
                 $base64Image
             );
 
-            if ($enrollmentResult['status'] !== '200') {
+            if (!isset($enrollmentResult['status']) || $enrollmentResult['status'] !== '200') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Face enrollment failed: ' . ($enrollmentResult['status_message'] ?? 'Unknown error')
+                    'message' => 'Face enrollment failed: ' . ($enrollmentResult['status_message'] ?? 'API returned an error')
                 ], 422);
             }
 
             // Update user record
             $user->update([
                 'face_image' => $base64Image,
-                'is_face_enrolled' => true
+                'is_face_enrolled' => true,
+                'face_gallery_id' => $userId
             ]);
 
             return response()->json([
@@ -76,7 +95,17 @@ class FaceEnrollmentController extends Controller
                 'message' => 'Face enrolled successfully! You can now use face recognition for attendance.'
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error: ' . implode(', ', $e->validator->errors()->all())
+            ], 422);
         } catch (\Exception $e) {
+            \Log::error('Face enrollment error: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Face enrollment failed: ' . $e->getMessage()

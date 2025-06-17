@@ -7,7 +7,7 @@ use App\Http\Controllers\FaceEnrollmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 Route::view('dashboard', 'dashboard')
@@ -45,8 +45,19 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('locations', LocationController::class);
         Route::post('locations/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('locations.toggle-status');
 
+        // User Management
+        Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+        Route::post('users/{user}/reset-face', [App\Http\Controllers\Admin\UserController::class, 'resetFaceEnrollment'])->name('users.reset-face');
+
         // Attendance Management
         Route::get('attendance/history', [AttendanceController::class, 'adminHistory'])->name('attendance.history');
+
+        // Reports
+        Route::get('reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
+        Route::get('reports/daily-summary', [App\Http\Controllers\Admin\ReportController::class, 'dailySummary'])->name('reports.daily-summary');
+        Route::get('reports/monthly-summary', [App\Http\Controllers\Admin\ReportController::class, 'monthlySummary'])->name('reports.monthly-summary');
+        Route::get('reports/location-usage', [App\Http\Controllers\Admin\ReportController::class, 'locationUsage'])->name('reports.location-usage');
     });
 });
 

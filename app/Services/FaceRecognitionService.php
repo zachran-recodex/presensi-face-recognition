@@ -24,14 +24,21 @@ class FaceRecognitionService
     public function getCounters(): array
     {
         try {
-            $response = Http::withHeaders([
-                'Accesstoken' => $this->accessToken
-            ])->get("{$this->baseUrl}/client/get-counters", [
-                'trx_id' => $this->generateTrxId()
-            ]);
+            // The API expects GET requests with JSON body (unusual but required)
+            $response = Http::timeout(30)->withHeaders([
+                'Accesstoken' => $this->accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->withBody(json_encode(['trx_id' => $this->generateTrxId()]), 'application/json')
+              ->get("{$this->baseUrl}/client/get-counters");
 
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                // Check if the response has the correct format
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+                return $result;
             }
 
             throw new \Exception('Failed to get counters: ' . $response->body());
@@ -47,21 +54,31 @@ class FaceRecognitionService
     public function createFaceGallery(): array
     {
         try {
-            $response = Http::withHeaders([
-                'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
-            ])->post("{$this->baseUrl}/facegallery/create-facegallery", [
+            $payload = json_encode([
                 'facegallery_id' => $this->faceGalleryId,
                 'trx_id' => $this->generateTrxId()
             ]);
 
+            $response = Http::timeout(30)->withHeaders([
+                'Accesstoken' => $this->accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->withBody($payload, 'application/json')
+              ->post("{$this->baseUrl}/facegallery/create-facegallery");
+
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                // Check if the response has the correct format
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+                return $result;
             }
 
             // If gallery already exists, that's okay
             $responseData = $response->json();
-            if (isset($responseData['status']) && $responseData['status'] == '400') {
+            if (isset($responseData['risetai']['status']) && 
+                ($responseData['risetai']['status'] == '400' || $responseData['risetai']['status'] == '417')) {
                 return ['status' => '200', 'message' => 'Gallery already exists'];
             }
 
@@ -78,19 +95,27 @@ class FaceRecognitionService
     public function enrollFace(string $userId, string $userName, string $base64Image): array
     {
         try {
-            $response = Http::withHeaders([
-                'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
-            ])->post("{$this->baseUrl}/facegallery/enroll-face", [
+            $payload = json_encode([
                 'user_id' => $userId,
                 'user_name' => $userName,
                 'facegallery_id' => $this->faceGalleryId,
-                'image' => $base64Image,
+                'image' => $this->processBase64Image($base64Image),
                 'trx_id' => $this->generateTrxId()
             ]);
 
+            $response = Http::timeout(60)->withHeaders([
+                'Accesstoken' => $this->accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->withBody($payload, 'application/json')
+              ->post("{$this->baseUrl}/facegallery/enroll-face");
+
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+                return $result;
             }
 
             throw new \Exception('Failed to enroll face: ' . $response->body());
@@ -106,18 +131,26 @@ class FaceRecognitionService
     public function verifyFace(string $userId, string $base64Image): array
     {
         try {
-            $response = Http::withHeaders([
-                'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
-            ])->post("{$this->baseUrl}/facegallery/verify-face", [
+            $payload = json_encode([
                 'user_id' => $userId,
                 'facegallery_id' => $this->faceGalleryId,
-                'image' => $base64Image,
+                'image' => $this->processBase64Image($base64Image),
                 'trx_id' => $this->generateTrxId()
             ]);
 
+            $response = Http::timeout(60)->withHeaders([
+                'Accesstoken' => $this->accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->withBody($payload, 'application/json')
+              ->post("{$this->baseUrl}/facegallery/verify-face");
+
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+                return $result;
             }
 
             throw new \Exception('Failed to verify face: ' . $response->body());
@@ -133,7 +166,7 @@ class FaceRecognitionService
     public function identifyFace(string $base64Image): array
     {
         try {
-            $response = Http::withHeaders([
+            $response = Http::timeout(60)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json'
             ])->post("{$this->baseUrl}/facegallery/identify-face", [
@@ -185,16 +218,24 @@ class FaceRecognitionService
     public function listFaces(): array
     {
         try {
-            $response = Http::withHeaders([
+            // Use GET with JSON body like the counters endpoint
+            $response = Http::timeout(30)->withHeaders([
                 'Accesstoken' => $this->accessToken,
-                'Content-Type' => 'application/json'
-            ])->get("{$this->baseUrl}/facegallery/list-faces", [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ])->withBody(json_encode([
                 'facegallery_id' => $this->faceGalleryId,
                 'trx_id' => $this->generateTrxId()
-            ]);
+            ]), 'application/json')
+              ->get("{$this->baseUrl}/facegallery/list-faces");
 
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                // Check if the response has the correct format
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+                return $result;
             }
 
             throw new \Exception('Failed to get face list: ' . $response->body());

@@ -9,6 +9,7 @@ use App\Services\FaceRecognitionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Carbon\Carbon;
 
@@ -260,14 +261,15 @@ class AttendanceController extends Controller
     /**
      * Admin view all attendances
      */
-    public function adminHistory(Request $request): View
+    public function adminHistory(Request $request)
     {
-        $this->middleware(function ($request, $next) {
-            if (!auth()->user()->isAdmin()) {
-                abort(403, 'Unauthorized access');
-            }
-            return $next($request);
-        });
+        // Check if this is an export request
+        if ($request->has('export')) {
+            return $this->exportAttendanceData($request);
+        }
+
+        // Admin middleware is already applied in routes/web.php
+        // No need for manual admin check here
 
         $query = Attendance::with(['user', 'location']);
 
@@ -300,6 +302,111 @@ class AttendanceController extends Controller
         $locations = Location::orderBy('name')->get();
 
         return view('admin.attendance.history', compact('attendances', 'users', 'locations'));
+    }
+
+    /**
+     * Export attendance data
+     */
+    private function exportAttendanceData(Request $request): Response
+    {
+        $query = Attendance::with(['user', 'location']);
+
+        // Apply the same filters as the view
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('location_id')) {
+            $query->where('location_id', $request->location_id);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('attendance_time', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('attendance_time', '<=', $request->end_date);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $attendances = $query->orderBy('attendance_time', 'desc')->get();
+
+        $format = $request->get('export', 'csv');
+        $filename = 'attendance_report_' . now()->format('Y-m-d_H-i-s');
+
+        if ($format === 'csv') {
+            return $this->exportAsCsv($attendances, $filename);
+        } elseif ($format === 'excel') {
+            return $this->exportAsExcel($attendances, $filename);
+        }
+
+        abort(400, 'Invalid export format');
+    }
+
+    /**
+     * Export data as CSV
+     */
+    private function exportAsCsv($attendances, $filename): Response
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+        ];
+
+        $callback = function() use ($attendances) {
+            $file = fopen('php://output', 'w');
+
+            // CSV Headers
+            fputcsv($file, [
+                'ID',
+                'Employee ID',
+                'Employee Name',
+                'Type',
+                'Date',
+                'Time',
+                'Location',
+                'Address',
+                'Verified',
+                'Confidence Level',
+                'Notes',
+                'Created At'
+            ]);
+
+            // CSV Data
+            foreach ($attendances as $attendance) {
+                fputcsv($file, [
+                    $attendance->id,
+                    $attendance->user->employee_id ?: $attendance->user->id,
+                    $attendance->user->name,
+                    ucfirst(str_replace('_', ' ', $attendance->type)),
+                    $attendance->attendance_time->format('Y-m-d'),
+                    $attendance->attendance_time->format('H:i:s'),
+                    $attendance->location->name ?? 'N/A',
+                    $attendance->location->address ?? 'N/A',
+                    $attendance->is_verified ? 'Yes' : 'No',
+                    $attendance->confidence_level ? number_format($attendance->confidence_level * 100, 2) . '%' : 'N/A',
+                    $attendance->notes ?: '',
+                    $attendance->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export data as Excel (using CSV format for simplicity)
+     */
+    private function exportAsExcel($attendances, $filename): Response
+    {
+        // For simplicity, we'll use CSV format with .xlsx extension
+        // In a real application, you might want to use a library like PhpSpreadsheet
+        return $this->exportAsCsv($attendances, $filename . '.xlsx');
     }
 
     /**
