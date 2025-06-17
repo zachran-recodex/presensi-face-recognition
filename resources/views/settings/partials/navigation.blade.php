@@ -8,7 +8,7 @@
                     'bg-white dark:bg-gray-600 block px-4 py-3  text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
                         'settings.profile.*'),
                 ])>
-                    {{ __('Profile') }}
+                    Profil
                 </a>
             </li>
             <li>
@@ -18,7 +18,7 @@
                     'bg-white dark:bg-gray-600  block px-4 py-3 text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
                         'settings.password.*'),
                 ])>
-                    {{ __('Password') }}
+                    Password
                 </a>
             </li>
             <li>
@@ -28,7 +28,7 @@
                     'bg-white dark:bg-gray-600 block px-4 py-3  text-gray-900 dark:text-gray-100 font-medium' => request()->routeIs(
                         'settings.appearance.*'),
                 ])>
-                    {{ __('Appearance') }}
+                    Tampilan
                 </a>
             </li>
         </ul>
