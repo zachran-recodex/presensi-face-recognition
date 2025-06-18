@@ -288,4 +288,63 @@ class FaceApiTestController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Update Face Gallery ID
+     */
+    public function updateGalleryId(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'gallery_id' => 'required|string|max:255',
+            ]);
+
+            // Read current .env file
+            $envPath = base_path('.env');
+            if (!file_exists($envPath)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => '.env file not found',
+                ], 500);
+            }
+
+            $envContent = file_get_contents($envPath);
+            
+            // Update or add BIZNET_FACE_GALLERY_ID
+            if (preg_match('/^BIZNET_FACE_GALLERY_ID=.*$/m', $envContent)) {
+                $envContent = preg_replace(
+                    '/^BIZNET_FACE_GALLERY_ID=.*$/m',
+                    'BIZNET_FACE_GALLERY_ID=' . $validated['gallery_id'],
+                    $envContent
+                );
+            } else {
+                $envContent .= "\nBIZNET_FACE_GALLERY_ID=" . $validated['gallery_id'];
+            }
+
+            // Write back to .env file
+            file_put_contents($envPath, $envContent);
+
+            // Clear config cache to reflect changes
+            if (app()->environment('production')) {
+                \Artisan::call('config:cache');
+            } else {
+                \Artisan::call('config:clear');
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Face Gallery ID updated successfully',
+                'data' => [
+                    'new_gallery_id' => $validated['gallery_id'],
+                    'previous_gallery_id' => config('services.biznet_face.face_gallery_id'),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update Face Gallery ID: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }

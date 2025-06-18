@@ -18,7 +18,12 @@
             </div>
             <div>
                 <label class="text-sm font-medium text-gray-500">Gallery ID</label>
-                <p class="text-sm text-gray-800">{{ $config['gallery_id'] }}</p>
+                <div class="flex items-center gap-2">
+                    <p class="text-sm text-gray-800">{{ $config['gallery_id'] }}</p>
+                    <button onclick="updateGalleryId()" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition-colors">
+                        Update
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -526,6 +531,38 @@
                     </div>
                 </div>
             `;
+        }
+
+        async function updateGalleryId() {
+            const newGalleryId = prompt('Masukkan Gallery ID baru:', '{{ $config["gallery_id"] }}');
+            
+            if (!newGalleryId) {
+                return;
+            }
+
+            showLoading('Updating Gallery ID...');
+            try {
+                const response = await fetch('{{ route("admin.face-api-test.update-gallery-id") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        gallery_id: newGalleryId
+                    })
+                });
+                const result = await response.json();
+                showResult(result.success ? 'success' : 'error', result.message, result.data);
+                
+                if (result.success) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            } catch (error) {
+                showResult('error', 'Failed to update Gallery ID: ' + error.message);
+            }
         }
 
         // Start camera automatically

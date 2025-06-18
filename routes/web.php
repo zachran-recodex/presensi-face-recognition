@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('face-api-test/test-identification', [FaceApiTestController::class, 'testIdentification'])->name('face-api-test.test-identification');
         Route::post('face-api-test/test-comparison', [FaceApiTestController::class, 'testComparison'])->name('face-api-test.test-comparison');
         Route::post('face-api-test/test-deletion', [FaceApiTestController::class, 'testDeletion'])->name('face-api-test.test-deletion');
+        Route::post('face-api-test/update-gallery-id', [FaceApiTestController::class, 'updateGalleryId'])->name('face-api-test.update-gallery-id');
     });
 });
 
