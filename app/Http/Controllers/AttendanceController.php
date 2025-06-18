@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\User;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -75,7 +76,7 @@ class AttendanceController extends Controller
     /**
      * Show check-in form
      */
-    public function checkIn(): View
+    public function checkIn(): View|RedirectResponse
     {
         $user = auth()->user();
 
@@ -97,7 +98,7 @@ class AttendanceController extends Controller
     /**
      * Show check-out form
      */
-    public function checkOut(): View
+    public function checkOut(): View|RedirectResponse
     {
         $user = auth()->user();
 

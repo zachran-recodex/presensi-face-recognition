@@ -1,5 +1,5 @@
 <aside :class="{ 'w-full md:w-64': sidebarOpen, 'w-0 md:w-16 hidden md:block': !sidebarOpen }"
-       class="bg-sidebar text-sidebar-foreground border-r border-gray-200 sidebar-transition overflow-hidden">
+       class="bg-sidebar text-sidebar-foreground border-r border-gray-200 dark:border-gray-700 sidebar-transition overflow-hidden">
     <!-- Sidebar Content -->
     <div class="h-full flex flex-col">
         <!-- Sidebar Menu -->
@@ -13,10 +13,12 @@
                     <!-- Attendance -->
                     <x-layouts.sidebar-link href="{{ route('attendance.index') }}" icon='fas-clock' :active="request()->routeIs('attendance.index')">Overview</x-layouts.sidebar-link>
 
-                    @if(!auth()->user()->hasCheckedInToday())
-                        <x-layouts.sidebar-link href="{{ route('attendance.check-in') }}" icon='fas-sign-in-alt' :active="request()->routeIs('attendance.check-in')">Check In</x-layouts.sidebar-link>
-                    @elseif(!auth()->user()->hasCheckedOutToday())
-                        <x-layouts.sidebar-link href="{{ route('attendance.check-out') }}" icon='fas-sign-out-alt' :active="request()->routeIs('attendance.check-out')">Check Out</x-layouts.sidebar-link>
+                    @if(auth()->user()->is_face_enrolled)
+                        @if(!auth()->user()->hasCheckedInToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-in') }}" icon='fas-sign-in-alt' :active="request()->routeIs('attendance.check-in')">Check In</x-layouts.sidebar-link>
+                        @elseif(!auth()->user()->hasCheckedOutToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-out') }}" icon='fas-sign-out-alt' :active="request()->routeIs('attendance.check-out')">Check Out</x-layouts.sidebar-link>
+                        @endif
                     @endif
 
                     <x-layouts.sidebar-link href="{{ route('attendance.history') }}" icon='fas-history' :active="request()->routeIs('attendance.history') || request()->routeIs('attendance.show')">Riwayat Presensi</x-layouts.sidebar-link>
@@ -43,20 +45,22 @@
                      <!-- Attendance Management -->
                     <x-layouts.sidebar-link href="{{ route('attendance.index') }}" icon='fas-clock' :active="request()->routeIs('attendance.index')">Overview</x-layouts.sidebar-link>
 
-                    @if(!auth()->user()->hasCheckedInToday())
-                        <x-layouts.sidebar-link href="{{ route('attendance.check-in') }}" icon='fas-sign-in-alt' :active="request()->routeIs('attendance.check-in')">Check In</x-layouts.sidebar-link>
-                    @elseif(!auth()->user()->hasCheckedOutToday())
-                        <x-layouts.sidebar-link href="{{ route('attendance.check-out') }}" icon='fas-sign-out-alt' :active="request()->routeIs('attendance.check-out')">Check Out</x-layouts.sidebar-link>
-                    @endif
-
-                    <x-layouts.sidebar-link href="{{ route('attendance.history') }}" icon='fas-history' :active="request()->routeIs('attendance.history') || request()->routeIs('attendance.show')">Riwayat Presensi</x-layouts.sidebar-link>
-
                     <!-- Face Recognition -->
                     @if(!auth()->user()->is_face_enrolled)
                         <x-layouts.sidebar-link href="{{ route('face.enroll') }}" icon='fas-user-plus' :active="request()->routeIs('face.enroll')">Daftarkan Wajah</x-layouts.sidebar-link>
                     @else
                         <x-layouts.sidebar-link href="{{ route('face.edit') }}" icon='fas-user-edit' :active="request()->routeIs('face.edit')">Perbarui Wajah</x-layouts.sidebar-link>
                     @endif
+
+                    @if(auth()->user()->is_face_enrolled)
+                        @if(!auth()->user()->hasCheckedInToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-in') }}" icon='fas-sign-in-alt' :active="request()->routeIs('attendance.check-in')">Check In</x-layouts.sidebar-link>
+                        @elseif(!auth()->user()->hasCheckedOutToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-out') }}" icon='fas-sign-out-alt' :active="request()->routeIs('attendance.check-out')">Check Out</x-layouts.sidebar-link>
+                        @endif
+                    @endif
+
+                    <x-layouts.sidebar-link href="{{ route('attendance.history') }}" icon='fas-history' :active="request()->routeIs('attendance.history') || request()->routeIs('attendance.show')">Riwayat Presensi</x-layouts.sidebar-link>
                 @endif
 
                 <!-- Settings (for all users) -->
