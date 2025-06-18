@@ -41,18 +41,17 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin Routes
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        // User Management
+        Route::resource('users', App\Http\Controllers\UserController::class);
+        Route::post('users/{user}/reset-face', [App\Http\Controllers\UserController::class, 'resetFaceEnrollment'])->name('users.reset-face');
+
         // Location Management
         Route::resource('locations', LocationController::class);
         Route::post('locations/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('locations.toggle-status');
         Route::post('locations/validate-coordinates', [LocationController::class, 'validateCoordinates'])->name('locations.validate-coordinates');
 
-        // User Management
-        Route::resource('users', App\Http\Controllers\Admin\UserController::class);
-        Route::post('users/{user}/reset-face', [App\Http\Controllers\Admin\UserController::class, 'resetFaceEnrollment'])->name('users.reset-face');
-
         // Attendance Management
         Route::get('attendance/history', [AttendanceController::class, 'adminHistory'])->name('attendance.history');
-
     });
 });
 

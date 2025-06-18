@@ -1,10 +1,8 @@
 <x-layouts.app>
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center text-sm">
-        <a href="{{ route('dashboard') }}" class="text-blue-600 dark:text-blue-400 hover:underline">Dashboard</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+        <a href="{{ route('dashboard') }}" class="text-blue-600 hover:underline">Dashboard</a>
+        <x-fas-chevron-right class="h-4 w-4 mx-2 text-gray-400" />
         <span class="text-gray-500">Kelola Akun</span>
     </div>
 
@@ -15,8 +13,7 @@
             <p class="text-gray-600 mt-1">Mengelola pengguna website dan role mereka</p>
         </div>
         <div class="flex space-x-3">
-            <a href="{{ route('admin.users.create') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+            <a href="{{ route('admin.users.create') }}" class="btn-primary">
                 Buat Akun
             </a>
         </div>
@@ -25,60 +22,60 @@
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <!-- Total Users -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div class="card">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">Seluruh Karyawan</p>
                     <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($stats['total_users']) }}</p>
                 </div>
-                <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-full">
-                    <x-fas-users class="h-6 w-6 text-blue-500 dark:text-blue-300" />
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <x-fas-users class="h-6 w-6 text-blue-500" />
                 </div>
             </div>
         </div>
 
         <!-- Admin Users -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div class="card">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">Total Admin</p>
                     <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($stats['admin_users']) }}</p>
                 </div>
-                <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full">
-                    <x-fas-lock class="h-6 w-6 text-green-500 dark:text-green-300" />
+                <div class="bg-green-100 p-3 rounded-full">
+                    <x-fas-lock class="h-6 w-6 text-green-500" />
                 </div>
             </div>
         </div>
 
         <!-- Regular Users -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div class="card">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">Total Karyawan</p>
                     <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($stats['regular_users']) }}</p>
                 </div>
-                <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
-                    <x-fas-user class="h-6 w-6 text-purple-500 dark:text-purple-300" />
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <x-fas-user class="h-6 w-6 text-purple-500" />
                 </div>
             </div>
         </div>
 
         <!-- Face Enrolled -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <div class="card">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500">Wajah Terdaftar</p>
                     <p class="text-2xl font-bold text-gray-800 mt-1">{{ number_format($stats['face_enrolled']) }}</p>
                 </div>
-                <div class="bg-orange-100 dark:bg-orange-900 p-3 rounded-full">
-                    <x-fas-face-smile-beam class="h-6 w-6 text-orange-500 dark:text-orange-300" />
+                <div class="bg-orange-100 p-3 rounded-full">
+                    <x-fas-face-smile-beam class="h-6 w-6 text-orange-500" />
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filters and Search -->
-    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 mb-6">
+    <div class="card mb-6">
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Search -->
             <div>
@@ -97,10 +94,10 @@
 
             <!-- Buttons -->
             <div class="flex items-end space-x-2">
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium">
+                <x-button type="primary">
                     Filter
-                </button>
-                <a href="{{ route('admin.users.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md font-medium">
+                </x-button>
+                <a href="{{ route('admin.users.index') }}" class="btn-secondary">
                     Clear
                 </a>
             </div>
@@ -108,12 +105,11 @@
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div class="card p-0 overflow-hidden">
         @if($users->count() > 0)
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-900">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Karyawan
@@ -135,9 +131,9 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($users as $user)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="h-10 w-10 rounded-full bg-blue-500 text-blue-100 flex items-center justify-center text-sm font-medium">
@@ -198,7 +194,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                        class="text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
+                                                        class="cursor-pointer text-red-600 hover:text-red-700 p-1 rounded hover:bg-red-50"
                                                         title="Delete">
                                                     <x-fas-trash class="w-5 h-5" />
                                                 </button>
