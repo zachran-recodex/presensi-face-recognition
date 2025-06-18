@@ -2,24 +2,24 @@
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
+           class="text-blue-600 hover:underline">{{ __('Dashboard') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
         <a href="{{ route('attendance.index') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Attendance') }}</a>
+           class="text-blue-600 hover:underline">{{ __('Attendance') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-gray-500 dark:text-gray-400">{{ __('Check Out') }}</span>
+        <span class="text-gray-500">{{ __('Check Out') }}</span>
     </div>
 
     <!-- Page Title -->
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Check Out') }}</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl font-bold text-gray-800">{{ __('Check Out') }}</h1>
+        <p class="text-gray-600 mt-1">
             {{ __('Complete your check-out with face recognition') }}
         </p>
     </div>
@@ -27,9 +27,9 @@
     <div class="max-w-2xl mx-auto">
         <!-- Check-in Info -->
         <div class="mb-6">
-            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-                <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">{{ __('Today\'s Check-in Information') }}</h3>
-                <div class="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+            <div class="bg-blue-50/20 border border-blue-200 rounded-lg p-4">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">{{ __('Today\'s Check-in Information') }}</h3>
+                <div class="space-y-2 text-sm text-blue-700">
                     <p><strong>{{ __('Check-in Time') }}:</strong> {{ $checkInRecord->attendance_time->format('H:i:s') }}</p>
                     <p><strong>{{ __('Location') }}:</strong> {{ $checkInRecord->location->name ?? 'N/A' }}</p>
                     <p><strong>{{ __('Status') }}:</strong>
@@ -46,13 +46,13 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6">
 
                 <!-- Camera Section -->
                 <div class="text-center mb-6">
                     <div class="relative inline-block">
-                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600"></video>
+                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300"></video>
                         <canvas id="canvas" class="hidden"></canvas>
                     </div>
 
@@ -71,16 +71,16 @@
 
                 <!-- Captured Image Preview -->
                 <div id="previewSection" class="hidden text-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ __('Captured Image') }}</h3>
-                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 mx-auto object-cover">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('Captured Image') }}</h3>
+                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300 mx-auto object-cover">
                 </div>
 
                 <!-- Notes Section -->
                 <div class="mb-6">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
                         {{ __('Notes (Optional)') }}
                     </label>
-                    <textarea id="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" placeholder="Add any additional notes..."></textarea>
+                    <textarea id="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Add any additional notes..."></textarea>
                 </div>
 
                 <!-- Check-out Form -->

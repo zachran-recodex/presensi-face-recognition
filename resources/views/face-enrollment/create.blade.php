@@ -2,30 +2,30 @@
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
+           class="text-blue-600 hover:underline">{{ __('Dashboard') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-gray-500 dark:text-gray-400">{{ __('Face Enrollment') }}</span>
+        <span class="text-gray-500">{{ __('Face Enrollment') }}</span>
     </div>
 
     <!-- Page Title -->
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Face Enrollment') }}</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl font-bold text-gray-800">{{ __('Face Enrollment') }}</h1>
+        <p class="text-gray-600 mt-1">
             {{ __('Enroll your face to enable face recognition for attendance') }}
         </p>
     </div>
 
     <div class="max-w-2xl mx-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6">
 
                 <!-- Instructions -->
-                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
-                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">{{ __('Instructions') }}</h3>
-                    <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                <div class="mb-6 p-4 bg-blue-50/20 border border-blue-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">{{ __('Instructions') }}</h3>
+                    <ul class="text-sm text-blue-700 space-y-1">
                         <li>• {{ __('Ensure good lighting and face the camera directly') }}</li>
                         <li>• {{ __('Remove any face covering (mask, glasses if possible)') }}</li>
                         <li>• {{ __('Keep your face centered in the camera frame') }}</li>
@@ -37,7 +37,7 @@
                 <!-- Camera Section -->
                 <div class="text-center mb-6">
                     <div class="relative inline-block">
-                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600"></video>
+                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300"></video>
                         <canvas id="canvas" class="hidden"></canvas>
                     </div>
 
@@ -56,8 +56,8 @@
 
                 <!-- Captured Image Preview -->
                 <div id="previewSection" class="hidden text-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ __('Captured Image') }}</h3>
-                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 mx-auto object-cover">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('Captured Image') }}</h3>
+                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300 mx-auto object-cover">
                 </div>
 
                 <!-- Enrollment Form -->
@@ -130,15 +130,15 @@
             // Set reasonable dimensions for face recognition (max 640x480)
             const maxWidth = 640;
             const maxHeight = 480;
-            
+
             let { videoWidth, videoHeight } = video;
-            
+
             // Calculate scaling to fit within max dimensions
             const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
-            
+
             canvas.width = videoWidth * scale;
             canvas.height = videoHeight * scale;
-            
+
             // Draw scaled image
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 

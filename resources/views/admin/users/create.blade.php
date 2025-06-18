@@ -96,7 +96,7 @@
                 </div>
 
                 <!-- Info Box -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                <div class="bg-blue-50/20 border border-blue-200 rounded-lg p-4">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -104,8 +104,8 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">{{ __('User Setup Information') }}</h3>
-                            <div class="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                            <h3 class="text-sm font-medium text-blue-800">{{ __('User Setup Information') }}</h3>
+                            <div class="mt-2 text-sm text-blue-700">
                                 <ul class="list-disc list-inside space-y-1">
                                     <li>{{ __('Users will need to enroll their face after first login') }}</li>
                                     <li>{{ __('Employee ID is used for face recognition - if not provided, user ID will be used') }}</li>
@@ -118,7 +118,7 @@
                 </div>
 
                 <!-- Submit Buttons -->
-                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
                     <x-button
                         tag="a"
                         href="{{ route('admin.users.index') }}"

@@ -2,39 +2,39 @@
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">{{ __('Dashboard') }}</a>
+           class="text-blue-600 hover:underline">{{ __('Dashboard') }}</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-gray-500 dark:text-gray-400">{{ __('Update Face Recognition') }}</span>
+        <span class="text-gray-500">{{ __('Update Face Recognition') }}</span>
     </div>
 
     <!-- Page Title -->
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ __('Update Face Recognition') }}</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl font-bold text-gray-800">{{ __('Update Face Recognition') }}</h1>
+        <p class="text-gray-600 mt-1">
             {{ __('Update your enrolled face for better recognition accuracy') }}
         </p>
     </div>
 
     <div class="max-w-2xl mx-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6">
 
                 <!-- Current Status -->
-                <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
-                    <h3 class="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">{{ __('Current Status') }}</h3>
-                    <div class="text-sm text-green-700 dark:text-green-300 space-y-1">
+                <div class="mb-6 p-4 bg-green-50/20 border border-green-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 mb-2">{{ __('Current Status') }}</h3>
+                    <div class="text-sm text-green-700 space-y-1">
                         <p>✓ {{ __('Face is currently enrolled and active') }}</p>
                         <p>{{ __('You can update your face image below if needed') }}</p>
                     </div>
                 </div>
 
                 <!-- Instructions -->
-                <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
-                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">{{ __('Update Instructions') }}</h3>
-                    <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                <div class="mb-6 p-4 bg-blue-50/20 border border-blue-200 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">{{ __('Update Instructions') }}</h3>
+                    <ul class="text-sm text-blue-700 space-y-1">
                         <li>• {{ __('Ensure good lighting and face the camera directly') }}</li>
                         <li>• {{ __('Remove any face covering (mask, glasses if possible)') }}</li>
                         <li>• {{ __('Keep your face centered in the camera frame') }}</li>
@@ -45,13 +45,13 @@
 
                 <!-- Test Current Face -->
                 <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{{ __('Test Current Face Recognition') }}</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('Test Current Face Recognition') }}</h3>
+                    <p class="text-sm text-gray-600 mb-4">
                         {{ __('Test your current enrolled face before updating to ensure it\'s working properly.') }}
                     </p>
 
                     <div class="text-center mb-4">
-                        <video id="testVideo" autoplay playsinline class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 hidden"></video>
+                        <video id="testVideo" autoplay playsinline class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300 hidden"></video>
                         <canvas id="testCanvas" class="hidden"></canvas>
                     </div>
 
@@ -67,14 +67,14 @@
                     <div id="testResult" class="hidden mb-4"></div>
                 </div>
 
-                <hr class="border-gray-200 dark:border-gray-700 mb-6">
+                <hr class="border-gray-200 mb-6">
 
                 <!-- Camera Section for Update -->
                 <div class="text-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{{ __('Capture New Face Image') }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ __('Capture New Face Image') }}</h3>
 
                     <div class="relative inline-block">
-                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600"></video>
+                        <video id="video" autoplay playsinline class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300"></video>
                         <canvas id="canvas" class="hidden"></canvas>
                     </div>
 
@@ -93,8 +93,8 @@
 
                 <!-- Captured Image Preview -->
                 <div id="previewSection" class="hidden text-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">{{ __('New Captured Image') }}</h3>
-                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 dark:bg-gray-700 rounded-lg border-2 border-gray-300 dark:border-gray-600 mx-auto object-cover">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ __('New Captured Image') }}</h3>
+                    <img id="capturedImage" class="w-80 h-60 bg-gray-200 rounded-lg border-2 border-gray-300 mx-auto object-cover">
                 </div>
 
                 <!-- Update Form -->
@@ -113,11 +113,11 @@
                 </form>
 
                 <!-- Delete Face Enrollment -->
-                <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">
+                <div class="mt-8 border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-2">
                         {{ __('Delete Face Enrollment') }}
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">
+                    <p class="text-gray-600 mb-4">
                         {{ __('Remove your face enrollment completely. You will need to re-enroll to use face recognition again.') }}
                     </p>
                     <form action="{{ route('face.delete') }}" method="POST"
@@ -202,15 +202,15 @@
             // Set reasonable dimensions for face recognition (max 640x480)
             const maxWidth = 640;
             const maxHeight = 480;
-            
+
             let { videoWidth, videoHeight } = testVideo;
-            
+
             // Calculate scaling to fit within max dimensions
             const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
-            
+
             testCanvas.width = videoWidth * scale;
             testCanvas.height = videoHeight * scale;
-            
+
             // Draw scaled image
             testCtx.drawImage(testVideo, 0, 0, testCanvas.width, testCanvas.height);
 
@@ -311,15 +311,15 @@
             // Set reasonable dimensions for face recognition (max 640x480)
             const maxWidth = 640;
             const maxHeight = 480;
-            
+
             let { videoWidth, videoHeight } = video;
-            
+
             // Calculate scaling to fit within max dimensions
             const scale = Math.min(maxWidth / videoWidth, maxHeight / videoHeight, 1);
-            
+
             canvas.width = videoWidth * scale;
             canvas.height = videoHeight * scale;
-            
+
             // Draw scaled image
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 

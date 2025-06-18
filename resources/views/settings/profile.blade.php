@@ -2,24 +2,24 @@
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
-            class="text-blue-600 dark:text-blue-400 hover:underline">Dashboard</a>
+            class="text-blue-600 hover:underline">Dashboard</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
         <a href="{{ route('settings.profile.edit') }}"
-           class="text-blue-600 dark:text-blue-400 hover:underline">Pengaturan</a>
+           class="text-blue-600 hover:underline">Pengaturan</a>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
              stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-gray-500 dark:text-gray-400">Profil</span>
+        <span class="text-gray-500">Profil</span>
     </div>
 
     <!-- Page Title -->
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Profil</h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">Perbarui nama dan alamat email Anda</p>
+        <h1 class="text-2xl font-bold text-gray-800">Profil</h1>
+        <p class="text-gray-600 mt-1">Perbarui nama dan alamat email Anda</p>
     </div>
 
     <div class="p-6">
@@ -30,7 +30,7 @@
             <!-- Profile Content -->
             <div class="flex-1">
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+                    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
                     <div class="p-6">
                         <!-- Profile Form -->
                         <form class="max-w-md mb-10" action="{{ route('settings.profile.update') }}" method="POST">
@@ -52,7 +52,7 @@
                         </form>
 
                         <!-- Delete Account Section -->
-                        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+                        <div class="border-t border-gray-200 pt-6 mt-6">
                             <form action="{{ route('settings.profile.destroy') }}" method="POST"
                                 onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun Anda?')">
                                 @csrf

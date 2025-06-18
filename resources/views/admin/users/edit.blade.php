@@ -62,7 +62,7 @@
                         :value="old('employee_id', $user->employee_id)"
                         placeholder="{{ __('Optional - will use user ID if not provided') }}" />
                     @if($user->is_face_enrolled)
-                    <p class="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+                    <p class="mt-1 text-sm text-yellow-600">
                         {{ __('Warning: Changing Employee ID will require face re-enrollment') }}
                     </p>
                     @endif
@@ -89,7 +89,7 @@
                         :selected="old('role', $user->role)"
                         required />
                     @if($user->role === 'admin' && \App\Models\User::where('role', 'admin')->count() === 1)
-                    <p class="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
+                    <p class="mt-1 text-sm text-yellow-600">
                         {{ __('Warning: This is the only administrator account') }}
                     </p>
                     @endif
@@ -114,26 +114,26 @@
                 </div>
 
                 <!-- Current Status Info -->
-                <div class="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ __('Current Status') }}</h3>
+                <div class="bg-gray-50/20 border border-gray-200 rounded-lg p-4">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">{{ __('Current Status') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                            <span class="text-gray-600 dark:text-gray-400">{{ __('Face Enrollment:') }}</span>
+                            <span class="text-gray-600">{{ __('Face Enrollment:') }}</span>
                             <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                                {{ $user->is_face_enrolled ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-400' }}">
+                                {{ $user->is_face_enrolled ? 'bg-green-100 text-green-700/20' : 'bg-gray-100 text-gray-700/20' }}">
                                 {{ $user->is_face_enrolled ? __('Enrolled') : __('Not Enrolled') }}
                             </span>
                         </div>
                         <div>
-                            <span class="text-gray-600 dark:text-gray-400">{{ __('Total Attendances:') }}</span>
-                            <span class="ml-2 font-medium text-gray-900 dark:text-gray-100">{{ number_format($user->attendances()->count()) }}</span>
+                            <span class="text-gray-600">{{ __('Total Attendances:') }}</span>
+                            <span class="ml-2 font-medium text-gray-900">{{ number_format($user->attendances()->count()) }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Warning Box for Sensitive Changes -->
                 @if($user->is_face_enrolled || $user->attendances()->count() > 0)
-                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -141,8 +141,8 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">{{ __('Important Notice') }}</h3>
-                            <div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                            <h3 class="text-sm font-medium text-yellow-800">{{ __('Important Notice') }}</h3>
+                            <div class="mt-2 text-sm text-yellow-700">
                                 <ul class="list-disc list-inside space-y-1">
                                     @if($user->is_face_enrolled)
                                     <li>{{ __('This user has face enrollment data that may be affected by changes') }}</li>
@@ -159,7 +159,7 @@
                 @endif
 
                 <!-- Submit Buttons -->
-                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
                     <x-button
                         tag="a"
                         href="{{ route('admin.users.show', $user) }}"
