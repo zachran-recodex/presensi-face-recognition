@@ -21,13 +21,6 @@
                     <div class="mt-2 text-sm text-yellow-700">
                         <p>Anda perlu mendaftarkan wajah terlebih dahulu sebelum dapat melakukan presensi.</p>
                     </div>
-                    <div class="mt-4">
-                        <div class="-mx-2 -my-1.5 flex">
-                            <a href="{{ route('face.enroll') }}" class="bg-yellow-50 px-2 py-1.5 rounded-md text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:ring-yellow-600">
-                                Daftar Wajah Sekarang
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

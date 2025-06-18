@@ -78,12 +78,10 @@ class DashboardController extends Controller
         $hasCheckedIn = $user->hasCheckedInToday();
         $hasCheckedOut = $user->hasCheckedOutToday();
 
-        // Get this month's attendance summary
+        // Get this month's attendance count
         $thisMonthAttendances = $user->attendances()
             ->thisMonth()
-            ->with('location')
-            ->orderBy('attendance_time', 'desc')
-            ->get();
+            ->count();
 
         // Attendance history for user
         $query = $user->attendances()->with('location');
