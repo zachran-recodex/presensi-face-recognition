@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
         // Create admin user (no location assignment for admin)
         User::create([
             'name' => 'Zachran Razendra',
+            'username' => 'zachranraze',
             'email' => 'zachranraze@recodex.id',
             'email_verified_at' => now(),
             'password' => Hash::make('admin123'),
@@ -54,6 +55,7 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'name' => 'John Doe',
+                'username' => 'johndoe',
                 'email' => 'john@example.com',
                 'employee_id' => 'JKN001',
                 'location_id' => 2,
@@ -61,6 +63,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Jane Smith',
+                'username' => 'janesmith',
                 'email' => 'jane@example.com',
                 'employee_id' => 'JKN002',
                 'location_id' => 1,
@@ -71,6 +74,7 @@ class DatabaseSeeder extends Seeder
         foreach ($users as $userData) {
             User::create([
                 'name' => $userData['name'],
+                'username' => $userData['username'],
                 'email' => $userData['email'],
                 'email_verified_at' => now(),
                 'password' => Hash::make('password'),

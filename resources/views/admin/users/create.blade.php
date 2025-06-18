@@ -35,6 +35,15 @@
                         required />
                 </div>
 
+                <!-- Username -->
+                <div>
+                    <x-forms.input
+                        name="username"
+                        label="{{ __('Username') }}"
+                        :value="old('username')"
+                        required />
+                </div>
+
                 <!-- Email -->
                 <div>
                     <x-forms.input

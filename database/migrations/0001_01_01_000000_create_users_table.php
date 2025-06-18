@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('employee_id')->nullable()->unique();
             $table->string('phone')->nullable();
+            $table->unsignedBigInteger('location_id')->nullable();
             $table->text('face_image')->nullable(); // base64 encoded face for enrollment
             $table->boolean('is_face_enrolled')->default(false);
             $table->timestamp('email_verified_at')->nullable();
