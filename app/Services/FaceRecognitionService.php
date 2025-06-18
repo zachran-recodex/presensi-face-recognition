@@ -99,33 +99,53 @@ class FaceRecognitionService
     public function enrollFace(string $userId, string $userName, string $base64Image): array
     {
         try {
-            $payload = json_encode([
+            $processedImage = $this->processBase64Image($base64Image);
+            $payload = [
                 'user_id' => $userId,
                 'user_name' => $userName,
                 'facegallery_id' => $this->faceGalleryId,
-                'image' => $this->processBase64Image($base64Image),
+                'image' => $processedImage,
                 'trx_id' => $this->generateTrxId(),
+            ];
+            
+            Log::info('Face API enroll request', [
+                'user_id' => $userId,
+                'user_name' => $userName,
+                'facegallery_id' => $this->faceGalleryId,
+                'image_size' => strlen($processedImage),
+                'trx_id' => $payload['trx_id'],
             ]);
 
             $response = Http::timeout(60)->withHeaders([
                 'Accesstoken' => $this->accessToken,
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
-            ])->withBody($payload, 'application/json')
+            ])->withBody(json_encode($payload), 'application/json')
                 ->post("{$this->baseUrl}/facegallery/enroll-face");
 
+            $responseData = $response->json();
+            
+            Log::info('Face API enroll response', [
+                'status_code' => $response->status(),
+                'response_data' => $responseData,
+                'user_id' => $userId,
+            ]);
+
             if ($response->successful()) {
-                $result = $response->json();
-                if (isset($result['risetai'])) {
-                    return $result['risetai'];
+                if (isset($responseData['risetai'])) {
+                    return $responseData['risetai'];
                 }
 
-                return $result;
+                return $responseData;
             }
 
             throw new \Exception('Failed to enroll face: '.$response->body());
         } catch (\Exception $e) {
-            Log::error('Face API enroll error: '.$e->getMessage());
+            Log::error('Face API enroll error', [
+                'error' => $e->getMessage(),
+                'user_id' => $userId,
+                'error_type' => get_class($e),
+            ]);
             throw $e;
         }
     }

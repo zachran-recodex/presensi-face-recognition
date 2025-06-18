@@ -20,7 +20,7 @@ class FaceEnrollmentController extends Controller
     /**
      * Show face enrollment form
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
         $user = auth()->user();
 
@@ -44,12 +44,44 @@ class FaceEnrollmentController extends Controller
                 'face_image' => 'required|string', // base64 image
             ]);
 
-            // Check if user is already enrolled
+            // Check if user is already enrolled in database
             if ($user->is_face_enrolled) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Face is already enrolled. Use the update option instead.',
                 ], 422);
+            }
+            
+            // Check if user is already enrolled in Face API (sync check)
+            try {
+                $faceList = $this->faceService->listFaces();
+                $userId = (string) ($user->employee_id ?: $user->id);
+                $isEnrolledInAPI = false;
+                
+                if (isset($faceList['faces'])) {
+                    foreach ($faceList['faces'] as $face) {
+                        if ($face['user_id'] === $userId) {
+                            $isEnrolledInAPI = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if ($isEnrolledInAPI) {
+                    // Sync database with API state
+                    $user->update(['is_face_enrolled' => true]);
+                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Face is already enrolled in the system. Database has been synchronized.',
+                    ], 422);
+                }
+            } catch (\Exception $e) {
+                // If face list check fails, log it but continue with enrollment
+                \Log::warning('Face list check failed during enrollment', [
+                    'user_id' => auth()->id(),
+                    'error' => $e->getMessage(),
+                ]);
             }
 
             // Process face image
@@ -77,9 +109,16 @@ class FaceEnrollmentController extends Controller
             );
 
             if (! isset($enrollmentResult['status']) || $enrollmentResult['status'] !== '200') {
+                \Log::error('Face API enrollment failed', [
+                    'user_id' => auth()->id(),
+                    'user_email' => auth()->user()->email,
+                    'employee_id' => $user->employee_id,
+                    'api_response' => $enrollmentResult,
+                ]);
+                
                 return response()->json([
                     'success' => false,
-                    'message' => 'Face enrollment failed: '.($enrollmentResult['status_message'] ?? 'API returned an error'),
+                    'message' => 'Face enrollment failed: '.($enrollmentResult['status_message'] ?? 'API returned an error. Status: '.($enrollmentResult['status'] ?? 'unknown')),
                 ], 422);
             }
 
@@ -87,7 +126,7 @@ class FaceEnrollmentController extends Controller
             $user->update([
                 'face_image' => $base64Image,
                 'is_face_enrolled' => true,
-                'face_gallery_id' => $userId,
+                'face_gallery_id' => config('services.biznet_face.face_gallery_id', 'attendance_system'),
             ]);
 
             return response()->json([
@@ -96,6 +135,11 @@ class FaceEnrollmentController extends Controller
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Face enrollment validation error', [
+                'user_id' => auth()->id(),
+                'user_email' => auth()->user()->email,
+                'errors' => $e->validator->errors()->all(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error: '.implode(', ', $e->validator->errors()->all()),
@@ -103,6 +147,8 @@ class FaceEnrollmentController extends Controller
         } catch (\Exception $e) {
             \Log::error('Face enrollment error: '.$e->getMessage(), [
                 'user_id' => auth()->id(),
+                'user_email' => auth()->user()->email,
+                'error_type' => get_class($e),
                 'trace' => $e->getTraceAsString(),
             ]);
 
