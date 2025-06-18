@@ -3,16 +3,7 @@
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
            class="text-blue-600 hover:underline">{{ __('Dashboard') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <a href="{{ route('attendance.index') }}"
-           class="text-blue-600 hover:underline">{{ __('Attendance') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+        <x-fas-chevron-right class="h-4 w-4 mx-2 text-gray-400" />
         <span class="text-gray-500">{{ __('Check Out') }}</span>
     </div>
 
@@ -25,56 +16,25 @@
     </div>
 
     <div class="max-w-2xl mx-auto">
-        <!-- Check-in Info -->
-        <div class="mb-6">
-            <div class="bg-blue-50/20 border border-blue-200 rounded-lg p-4">
-                <h3 class="text-lg font-semibold text-blue-800 mb-2">{{ __('Today\'s Check-in Information') }}</h3>
-                <div class="space-y-2 text-sm text-blue-700">
-                    <p><strong>{{ __('Check-in Time') }}:</strong> {{ $checkInRecord->attendance_time->format('H:i:s') }}</p>
-                    <p><strong>{{ __('Location') }}:</strong> {{ $checkInRecord->location->name ?? 'N/A' }}</p>
-                    <p><strong>{{ __('Status') }}:</strong>
-                        @if($checkInRecord->is_verified)
-                            <span class="text-green-600">✓ {{ __('Verified') }}</span>
-                        @else
-                            <span class="text-red-600">✗ {{ __('Not Verified') }}</span>
-                        @endif
-                    </p>
-                    @if($checkInRecord->notes)
-                        <p><strong>{{ __('Notes') }}:</strong> {{ $checkInRecord->notes }}</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6">
 
-                <!-- Check-out Location Info -->
+                <!-- Check-in Info -->
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        {{ __('Check-out Location') }}
-                    </label>
-                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-                                <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="font-medium text-gray-900">{{ $checkInRecord->location->name }}</div>
-                                <div class="text-sm text-gray-500">{{ $checkInRecord->location->address }}</div>
-                                <div class="text-xs text-yellow-600 mt-1">
-                                    {{ __('You must check-out from the same location as check-in') }}
-                                </div>
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                        <h3 class="text-sm font-medium text-gray-800 mb-2">{{ __('Check-in Information') }}</h3>
+                        <div class="text-sm text-gray-600">
+                            <div><strong>{{ __('Time') }}:</strong> {{ $checkInRecord->attendance_time->format('H:i:s') }}</div>
+                            <div><strong>{{ __('Location') }}:</strong> {{ $checkInRecord->location->name }}</div>
+                            <div class="text-xs text-gray-400 mt-2">
+                                {{ __('You must check-out from the same location (within :radius meters)', ['radius' => $checkInRecord->location->radius]) }}
                             </div>
                         </div>
+                        <input type="hidden" id="locationId" value="{{ $checkInRecord->location->id }}" 
+                               data-lat="{{ $checkInRecord->location->latitude }}" 
+                               data-lng="{{ $checkInRecord->location->longitude }}" 
+                               data-radius="{{ $checkInRecord->location->radius }}">
                     </div>
-                    <input type="hidden" id="locationId" value="{{ $checkInRecord->location->id }}" 
-                           data-lat="{{ $checkInRecord->location->latitude }}" 
-                           data-lng="{{ $checkInRecord->location->longitude }}" 
-                           data-radius="{{ $checkInRecord->location->radius }}">
                 </div>
 
                 <!-- Location Status -->
@@ -122,6 +82,9 @@
                 <form id="checkoutForm" class="hidden">
                     @csrf
                     <input type="hidden" id="faceImageInput" name="face_image">
+                    <input type="hidden" id="locationIdInput" name="location_id">
+                    <input type="hidden" id="latitudeInput" name="latitude">
+                    <input type="hidden" id="longitudeInput" name="longitude">
                     <input type="hidden" id="notesInput" name="notes">
                     <input type="hidden" name="type" value="check_out">
 
@@ -135,10 +98,7 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center py-4">
                     <div class="inline-flex items-center">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <x-fas-spinner class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" />
                         {{ __('Processing check-out...') }}
                     </div>
                 </div>
@@ -219,9 +179,7 @@
                         infoDiv.className = 'p-4 border rounded-lg bg-green-50 border-green-200 text-green-800';
                         infoDiv.innerHTML = `
                             <div class="flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
+                                <x-fas-check-circle class="h-5 w-5 mr-2" />
                                 You are within the required location radius (${Math.round(distance)}m away)
                             </div>
                         `;
@@ -229,9 +187,7 @@
                         infoDiv.className = 'p-4 border rounded-lg bg-red-50 border-red-200 text-red-800';
                         infoDiv.innerHTML = `
                             <div class="flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
+                                <x-fas-exclamation-circle class="h-5 w-5 mr-2" />
                                 You are too far from the check-in location (${Math.round(distance)}m away, maximum ${radius}m required)
                             </div>
                         `;
@@ -310,6 +266,12 @@
         async function processCheckout(e) {
             e.preventDefault();
 
+            const locationElement = document.getElementById('locationId');
+            if (!locationElement || !locationElement.value) {
+                showMessage('No location data available.', 'error');
+                return;
+            }
+
             if (!capturedImageData) {
                 showMessage('Please capture a photo first', 'error');
                 return;
@@ -324,6 +286,7 @@
             // Prepare form data
             const formData = {
                 type: 'check_out',
+                location_id: locationElement.value,
                 face_image: capturedImageData,
                 notes: document.getElementById('notes').value
             };
@@ -348,7 +311,7 @@
                 if (data.success) {
                     showMessage(`Check-out successful! Confidence: ${(data.data.confidence_level * 100).toFixed(1)}%`, 'success');
                     setTimeout(() => {
-                        window.location.href = '{{ route("attendance.index") }}';
+                        window.location.href = '{{ route("dashboard") }}';
                     }, 2000);
                 } else {
                     showMessage(data.message, 'error');

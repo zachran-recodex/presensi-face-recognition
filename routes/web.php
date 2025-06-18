@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FaceApiTestController;
 use App\Http\Controllers\FaceEnrollmentController;
 use App\Http\Controllers\LocationController;
@@ -11,7 +12,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -32,12 +33,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('face/delete', [FaceEnrollmentController::class, 'destroy'])->name('face.delete');
     Route::post('face/test-verification', [FaceEnrollmentController::class, 'testVerification'])->name('face.test');
 
-    // Attendance Routes (for all users)
-    Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    // Attendance Routes
     Route::get('attendance/check-in', [AttendanceController::class, 'checkIn'])->name('attendance.check-in');
     Route::get('attendance/check-out', [AttendanceController::class, 'checkOut'])->name('attendance.check-out');
     Route::post('attendance/process', [AttendanceController::class, 'processAttendance'])->name('attendance.process');
-    Route::get('attendance/history', [AttendanceController::class, 'history'])->name('attendance.history');
     Route::get('attendance/{attendance}', [AttendanceController::class, 'show'])->name('attendance.show');
 
     // Admin Routes

@@ -121,7 +121,7 @@
                     </form>
                     @endif
 
-                    <a href="{{ route('admin.attendance.history', ['user_id' => $user->id]) }}" class="w-full btn-success text-center block">
+                    <a href="{{ route('dashboard', ['user_id' => $user->id]) }}" class="w-full btn-success text-center block">
                         {{ __('View Attendance History') }}
                     </a>
 
@@ -232,7 +232,7 @@
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-semibold text-gray-800">{{ __('Recent Attendances') }}</h2>
-                    <a href="{{ route('admin.attendance.history', ['user_id' => $user->id]) }}"
+                    <a href="{{ route('dashboard', ['user_id' => $user->id]) }}"
                        class="text-blue-600 hover:underline text-sm">
                         {{ __('View All') }}
                     </a>

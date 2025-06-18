@@ -3,16 +3,7 @@
     <div class="mb-6 flex items-center text-sm">
         <a href="{{ route('dashboard') }}"
            class="text-blue-600 hover:underline">{{ __('Dashboard') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <a href="{{ route('attendance.index') }}"
-           class="text-blue-600 hover:underline">{{ __('Attendance') }}</a>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-2 text-gray-400" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+        <x-fas-chevron-right class="h-4 w-4 mx-2 text-gray-400" />
         <span class="text-gray-500">{{ __('Check In') }}</span>
     </div>
 
@@ -38,10 +29,7 @@
                         <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
+                                    <x-fas-location-dot class="w-4 h-4 text-blue-600" />
                                 </div>
                                 <div>
                                     <div class="font-medium text-gray-900">{{ $location->name }}</div>
@@ -117,10 +105,7 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center py-4">
                     <div class="inline-flex items-center">
-                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <x-fas-spinner class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" />
                         {{ __('Processing check-in...') }}
                     </div>
                 </div>
@@ -201,9 +186,7 @@
                         infoDiv.className = 'p-4 border rounded-lg bg-green-50 border-green-200 text-green-800';
                         infoDiv.innerHTML = `
                             <div class="flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
+                                <x-fas-check-circle class="h-5 w-5 mr-2" />
                                 You are within the required location radius (${Math.round(distance)}m away)
                             </div>
                         `;
@@ -211,9 +194,7 @@
                         infoDiv.className = 'p-4 border rounded-lg bg-red-50 border-red-200 text-red-800';
                         infoDiv.innerHTML = `
                             <div class="flex items-center">
-                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                </svg>
+                                <x-fas-exclamation-circle class="h-5 w-5 mr-2" />
                                 You are too far from the assigned location (${Math.round(distance)}m away, maximum ${radius}m required)
                             </div>
                         `;
@@ -337,7 +318,7 @@
                 if (data.success) {
                     showMessage(`Check-in successful! Confidence: ${(data.data.confidence_level * 100).toFixed(1)}%`, 'success');
                     setTimeout(() => {
-                        window.location.href = '{{ route("attendance.index") }}';
+                        window.location.href = '{{ route("dashboard") }}';
                     }, 2000);
                 } else {
                     showMessage(data.message, 'error');

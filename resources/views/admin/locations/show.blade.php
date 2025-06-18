@@ -160,7 +160,7 @@
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-semibold text-gray-800">{{ __('Recent Attendances') }}</h2>
-                    <a href="{{ route('admin.attendance.history', ['location_id' => $location->id]) }}"
+                    <a href="{{ route('dashboard', ['location_id' => $location->id]) }}"
                        class="text-blue-600 hover:underline text-sm">
                         {{ __('View All') }}
                     </a>
