@@ -126,7 +126,6 @@ class FaceEnrollmentController extends Controller
             $user->update([
                 'face_image' => $base64Image,
                 'is_face_enrolled' => true,
-                'face_gallery_id' => config('services.biznet_face.face_gallery_id', 'attendance_system'),
             ]);
 
             return response()->json([

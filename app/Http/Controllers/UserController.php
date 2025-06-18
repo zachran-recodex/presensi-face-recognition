@@ -205,7 +205,6 @@ class UserController extends Controller
             $user->update([
                 'face_image' => null,
                 'is_face_enrolled' => false,
-                'face_gallery_id' => null,
             ]);
 
             return redirect()->route('admin.users.show', $user)

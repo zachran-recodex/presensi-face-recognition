@@ -29,7 +29,6 @@ class User extends Authenticatable
         'phone',
         'face_image',
         'is_face_enrolled',
-        'face_gallery_id',
     ];
 
     /**
