@@ -1,5 +1,5 @@
 <aside :class="{ 'w-full md:w-64': sidebarOpen, 'w-0 md:w-16 hidden md:block': !sidebarOpen }"
-       class="bg-sidebar text-sidebar-foreground border-r border-gray-200 dark:border-gray-700 sidebar-transition overflow-hidden">
+       class="bg-sidebar text-gray-700 border-r border-gray-200 sidebar-transition overflow-hidden">
     <!-- Sidebar Content -->
     <div class="h-full flex flex-col">
         <!-- Sidebar Menu -->
@@ -36,8 +36,10 @@
                         <!-- Location Management -->
                         <x-layouts.sidebar-two-level-link href="{{ route('admin.locations.index') }}" icon='fas-map-marker-alt' :active="request()->routeIs('admin.locations.*')">Kelola Lokasi</x-layouts.sidebar-two-level-link>
 
-                        <!-- Face API Testing -->
-                        <x-layouts.sidebar-two-level-link href="{{ route('admin.face-api-test.index') }}" icon='fas-cogs' :active="request()->routeIs('admin.face-api-test.*')">Test Face API</x-layouts.sidebar-two-level-link>
+                        <!-- Face API Testing (Super Admin Only) -->
+                        @if(auth()->user()->isSuperAdmin())
+                            <x-layouts.sidebar-two-level-link href="{{ route('admin.face-api-test.index') }}" icon='fas-cogs' :active="request()->routeIs('admin.face-api-test.*')">Test Face API</x-layouts.sidebar-two-level-link>
+                        @endif
 
                     </x-layouts.sidebar-two-level-link-parent>
 

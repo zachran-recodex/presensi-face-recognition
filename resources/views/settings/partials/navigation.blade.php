@@ -21,16 +21,6 @@
                     Password
                 </a>
             </li>
-            <li>
-                <a href="{{ route('settings.appearance.edit') }}" @class([
-                    'bg-gray-100 block px-4 py-3 text-gray-700 hover:bg-white' => !request()->routeIs(
-                        'settings.appearance.*'),
-                    'bg-white block px-4 py-3  text-gray-900 font-medium' => request()->routeIs(
-                        'settings.appearance.*'),
-                ])>
-                    Tampilan
-                </a>
-            </li>
         </ul>
     </nav>
 </div>

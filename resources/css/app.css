@@ -10,35 +10,28 @@
         "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
-    --sidebar-background: hsl(var(--sidebar-background));
-    --sidebar-foreground: hsl(var(--sidebar-foreground));
-    --sidebar-accent: hsl(var(--sidebar-accent));
-    --sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-    --sidebar-border: hsl(var(--sidebar-border));
-    --sidebar-ring: hsl(var(--sidebar-ring));
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
 
 @layer components {
     .bg-sidebar {
-        background-color: hsl(var(--sidebar-background));
+        background-color: white;
     }
 
     .bg-sidebar-accent {
-        background-color: hsl(var(--sidebar-accent));
+        background-color: #1f2937;
     }
 
     .text-sidebar-accent-foreground {
-        color: hsl(var(--sidebar-accent-foreground));
+        color: #f9fafb;
     }
 
     .hover\:bg-sidebar-accent:hover {
-        background-color: hsl(var(--sidebar-accent));
+        background-color: #1f2937;
     }
 
     .hover\:text-sidebar-accent-foreground:hover {
-        color: hsl(var(--sidebar-accent-foreground));
+        color: #f9fafb;
     }
 
     .btn-primary {
@@ -66,25 +59,7 @@
     }
 }
 
-@layer base {
-    :root {
-        --sidebar-background: 210 20% 98%;
-        --sidebar-foreground: 215 25% 27%;
-        --sidebar-accent: 217 33% 17%;
-        --sidebar-accent-foreground: 210 40% 98%;
-        --sidebar-border: 214 32% 91%;
-        --sidebar-ring: 221 83% 53%;
-    }
-
-    .dark {
-        --sidebar-background: 217 33% 17%;
-        --sidebar-foreground: 210 40% 98%;
-        --sidebar-accent: 210 40% 96%;
-        --sidebar-accent-foreground: 217 33% 17%;
-        --sidebar-border: 215 25% 27%;
-        --sidebar-ring: 221 83% 65%;
-    }
-}
+@layer base {}
 
 /* Custom scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
@@ -135,11 +110,6 @@
     color: #374151;
 }
 
-.dark .custom-file-input::before {
-    background: #374151;
-    border-color: #4b5563;
-    color: #e5e7eb;
-}
 
 .custom-file-input:hover::before {
     border-color: #9ca3af;
@@ -149,6 +119,3 @@
     background: #e5e7eb;
 }
 
-.dark .custom-file-input:active::before {
-    background: #4b5563;
-}

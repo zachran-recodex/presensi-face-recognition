@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['super_admin', 'admin', 'user'])->default('user');
             $table->string('employee_id')->nullable()->unique();
             $table->string('phone')->nullable();
             $table->unsignedBigInteger('location_id')->nullable();

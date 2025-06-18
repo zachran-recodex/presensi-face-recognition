@@ -23,7 +23,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('settings/profile', [Settings\ProfileController::class, 'destroy'])->name('settings.profile.destroy');
     Route::get('settings/password', [Settings\PasswordController::class, 'edit'])->name('settings.password.edit');
     Route::put('settings/password', [Settings\PasswordController::class, 'update'])->name('settings.password.update');
-    Route::get('settings/appearance', [Settings\AppearanceController::class, 'edit'])->name('settings.appearance.edit');
 
     // Face Enrollment Routes
     Route::get('face/enroll', [FaceEnrollmentController::class, 'create'])->name('face.enroll');
@@ -53,7 +52,11 @@ Route::middleware(['auth'])->group(function () {
         // Attendance Management
         Route::get('attendance/history', [AttendanceController::class, 'adminHistory'])->name('attendance.history');
 
-        // Face API Testing Routes
+    });
+
+    // Super Admin Only Routes
+    Route::middleware(['super_admin'])->prefix('admin')->name('admin.')->group(function () {
+        // Face API Testing Routes (Super Admin Only)
         Route::get('face-api-test', [FaceApiTestController::class, 'index'])->name('face-api-test.index');
         Route::post('face-api-test/connection', [FaceApiTestController::class, 'testConnection'])->name('face-api-test.connection');
         Route::post('face-api-test/counters', [FaceApiTestController::class, 'getCounters'])->name('face-api-test.counters');

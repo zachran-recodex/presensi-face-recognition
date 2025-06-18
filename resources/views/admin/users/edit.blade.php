@@ -93,7 +93,8 @@
                         label="{{ __('Role') }}"
                         :options="[
                             'user' => __('User'),
-                            'admin' => __('Administrator')
+                            'admin' => __('Administrator'),
+                            'super_admin' => __('Super Administrator')
                         ]"
                         :selected="old('role', $user->role)"
                         required />

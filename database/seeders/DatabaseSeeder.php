@@ -38,17 +38,30 @@ class DatabaseSeeder extends Seeder
             Location::create($locationData);
         }
 
-        // Create admin user (no location assignment for admin)
+        // Create super admin user (zachranraze)
         User::create([
             'name' => 'Zachran Razendra',
             'username' => 'zachranraze',
             'email' => 'zachranraze@recodex.id',
             'email_verified_at' => now(),
             'password' => Hash::make('admin123'),
-            'role' => 'admin',
+            'role' => 'super_admin',
             'employee_id' => 'JKN000',
             'location_id' => 2,
             'phone' => '+62812345678',
+        ]);
+
+        // Create regular admin user
+        User::create([
+            'name' => 'Admin User',
+            'username' => 'admin',
+            'email' => 'admin@example.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+            'employee_id' => 'JKN001',
+            'location_id' => 1,
+            'phone' => '+62812345677',
         ]);
 
         // Create sample regular users
@@ -57,7 +70,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'John Doe',
                 'username' => 'johndoe',
                 'email' => 'john@example.com',
-                'employee_id' => 'JKN001',
+                'employee_id' => 'JKN002',
                 'location_id' => 2,
                 'phone' => '+62812345679',
             ],
@@ -65,7 +78,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Jane Smith',
                 'username' => 'janesmith',
                 'email' => 'jane@example.com',
-                'employee_id' => 'JKN002',
+                'employee_id' => 'JKN003',
                 'location_id' => 1,
                 'phone' => '+62812345680',
             ],

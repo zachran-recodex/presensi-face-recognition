@@ -54,6 +54,7 @@ class UserController extends Controller
         // Get statistics
         $stats = [
             'total_users' => User::count(),
+            'super_admin_users' => User::where('role', 'super_admin')->count(),
             'admin_users' => User::where('role', 'admin')->count(),
             'regular_users' => User::where('role', 'user')->count(),
             'face_enrolled' => User::where('is_face_enrolled', true)->count(),
@@ -82,7 +83,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users'],
             'phone' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'in:admin,user'],
+            'role' => ['required', 'in:super_admin,admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -138,7 +139,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users,employee_id,'.$user->id],
             'phone' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'in:admin,user'],
+            'role' => ['required', 'in:super_admin,admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -166,8 +167,14 @@ class UserController extends Controller
                 ->withErrors(['error' => 'Cannot delete user with existing attendance records']);
         }
 
-        // Prevent deletion of the last admin user
-        if ($user->isAdmin() && User::where('role', 'admin')->count() === 1) {
+        // Prevent deletion of the last super admin user
+        if ($user->isSuperAdmin() && User::where('role', 'super_admin')->count() === 1) {
+            return redirect()->route('admin.users.index')
+                ->withErrors(['error' => 'Cannot delete the last super admin user']);
+        }
+
+        // Prevent deletion of the last admin user (if no super admin exists)
+        if ($user->isRegularAdmin() && User::where('role', 'admin')->count() === 1 && User::where('role', 'super_admin')->count() === 0) {
             return redirect()->route('admin.users.index')
                 ->withErrors(['error' => 'Cannot delete the last admin user']);
         }
