@@ -34,7 +34,7 @@
                             Wajah Admin Belum Terdaftar
                         </h3>
                         <div class="mt-2 text-sm text-yellow-700">
-                            <p>Sebagai admin, Anda juga perlu mendaftarkan wajah untuk dapat melakukan absensi dan menggunakan fitur pengenalan wajah.</p>
+                            <p>Sebagai admin, Anda juga perlu mendaftarkan wajah untuk dapat melakukan presensi dan menggunakan fitur pengenalan wajah.</p>
                         </div>
                         <div class="mt-4">
                             <div class="-mx-2 -my-1.5 flex">
@@ -141,8 +141,8 @@
                             <x-icon name="login" class="w-5 h-5 text-green-600" />
                         </div>
                         <div>
-                            <h3 class="font-medium text-gray-800">Lihat Semua Absensi </h3>
-                            <p class="text-sm text-gray-500">Memantau semua riwayat absensi karyawan</p>
+                            <h3 class="font-medium text-gray-800">Lihat Semua Presensi </h3>
+                            <p class="text-sm text-gray-500">Memantau semua riwayat presensi karyawan</p>
                         </div>
                     </div>
                 </a>
@@ -185,7 +185,7 @@
                             Wajah Belum Terdaftar
                         </h3>
                         <div class="mt-2 text-sm text-yellow-700">
-                            <p>Anda perlu mendaftarkan wajah terlebih dahulu sebelum dapat melakukan absensi.</p>
+                            <p>Anda perlu mendaftarkan wajah terlebih dahulu sebelum dapat melakukan presensi.</p>
                         </div>
                         <div class="mt-4">
                             <div class="-mx-2 -my-1.5 flex">
@@ -214,7 +214,7 @@
                         </p>
                         <p class="text-xs text-gray-500 mt-1">
                             @if($user->is_face_enrolled)
-                                Siap untuk absensi
+                                Siap untuk presensi
                             @else
                                 Harus mendaftarkan wajah
                             @endif
@@ -302,7 +302,7 @@
                     @else
                         <div class="text-center py-4">
                             <div class="text-green-600 font-medium">
-                                ✓ Absensi Selesai
+                                ✓ Presensi Selesai
                             </div>
                             <p class="text-sm text-gray-500 mt-1">Sampai jumpa besok!</p>
                         </div>
@@ -323,7 +323,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-medium text-gray-800">Absensi</h3>
+                            <h3 class="font-medium text-gray-800">Presensi</h3>
                             <p class="text-sm text-gray-500">Check in/out dan melihat status</p>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
                         </div>
                         <div>
                             <h3 class="font-medium text-gray-800">Riwayat</h3>
-                            <p class="text-sm text-gray-500">Melihat riwayat absensi Anda</p>
+                            <p class="text-sm text-gray-500">Melihat riwayat presensi Anda</p>
                         </div>
                     </div>
                 </a>
