@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('face_image')->nullable(); // base64 encoded face for enrollment
             $table->boolean('is_face_enrolled')->default(false);
-            $table->string('face_gallery_id')->default('default_gallery');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

@@ -79,11 +79,42 @@ class FaceRecognitionService
                 return $result;
             }
 
-            // If gallery already exists, that's okay
+            // If gallery already exists, that's okay - provide more detailed info
             $responseData = $response->json();
             if (isset($responseData['risetai']['status']) &&
                 ($responseData['risetai']['status'] == '400' || $responseData['risetai']['status'] == '417')) {
-                return ['status' => '200', 'message' => 'Gallery already exists'];
+                
+                // Get current gallery info and list of all galleries
+                try {
+                    $galleriesList = $this->getMyGalleries();
+                    $facesList = $this->listFaces();
+                    $faceCount = 0;
+                    if (isset($facesList['faces']) && is_array($facesList['faces'])) {
+                        $faceCount = count($facesList['faces']);
+                    }
+                    
+                    return [
+                        'status' => '200', 
+                        'message' => 'Gallery already exists',
+                        'gallery_info' => [
+                            'current_gallery' => $this->faceGalleryId,
+                            'total_faces_in_current' => $faceCount,
+                            'all_my_galleries' => $galleriesList,
+                            'api_response' => $responseData['risetai'] ?? $responseData
+                        ]
+                    ];
+                } catch (\Exception $e) {
+                    // If can't get galleries/faces list, just return basic response
+                    return [
+                        'status' => '200', 
+                        'message' => 'Gallery already exists',
+                        'gallery_info' => [
+                            'current_gallery' => $this->faceGalleryId,
+                            'api_response' => $responseData['risetai'] ?? $responseData,
+                            'note' => 'Could not fetch additional gallery info: ' . $e->getMessage()
+                        ]
+                    ];
+                }
             }
 
             throw new \Exception('Failed to create face gallery: '.$response->body());
@@ -234,6 +265,35 @@ class FaceRecognitionService
             throw new \Exception('Failed to delete face: '.$response->body());
         } catch (\Exception $e) {
             Log::error('Face API delete error: '.$e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Get list of my face galleries
+     */
+    public function getMyGalleries(): array
+    {
+        try {
+            $response = Http::timeout(30)->withHeaders([
+                'Accesstoken' => $this->accessToken,
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])->get("{$this->baseUrl}/facegallery/my-facegalleries");
+
+            if ($response->successful()) {
+                $result = $response->json();
+                // Check if the response has the correct format
+                if (isset($result['risetai'])) {
+                    return $result['risetai'];
+                }
+
+                return $result;
+            }
+
+            throw new \Exception('Failed to get my galleries: '.$response->body());
+        } catch (\Exception $e) {
+            Log::error('Face API get my galleries error: '.$e->getMessage());
             throw $e;
         }
     }

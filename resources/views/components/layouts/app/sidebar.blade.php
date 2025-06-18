@@ -40,6 +40,9 @@
                         <!-- Location Management -->
                         <x-layouts.sidebar-two-level-link href="{{ route('admin.locations.index') }}" icon='fas-map-marker-alt' :active="request()->routeIs('admin.locations.*')">Kelola Lokasi</x-layouts.sidebar-two-level-link>
 
+                        <!-- Face API Testing -->
+                        <x-layouts.sidebar-two-level-link href="{{ route('admin.face-api-test.index') }}" icon='fas-cogs' :active="request()->routeIs('admin.face-api-test.*')">Test Face API</x-layouts.sidebar-two-level-link>
+
                     </x-layouts.sidebar-two-level-link-parent>
 
                      <!-- Attendance Management -->

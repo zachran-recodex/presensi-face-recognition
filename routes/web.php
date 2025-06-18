@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\FaceApiTestController;
 use App\Http\Controllers\FaceEnrollmentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\Settings;
@@ -52,6 +53,19 @@ Route::middleware(['auth'])->group(function () {
 
         // Attendance Management
         Route::get('attendance/history', [AttendanceController::class, 'adminHistory'])->name('attendance.history');
+
+        // Face API Testing Routes
+        Route::get('face-api-test', [FaceApiTestController::class, 'index'])->name('face-api-test.index');
+        Route::post('face-api-test/connection', [FaceApiTestController::class, 'testConnection'])->name('face-api-test.connection');
+        Route::post('face-api-test/counters', [FaceApiTestController::class, 'getCounters'])->name('face-api-test.counters');
+        Route::post('face-api-test/create-gallery', [FaceApiTestController::class, 'createGallery'])->name('face-api-test.create-gallery');
+        Route::post('face-api-test/my-galleries', [FaceApiTestController::class, 'getMyGalleries'])->name('face-api-test.my-galleries');
+        Route::post('face-api-test/list-faces', [FaceApiTestController::class, 'listFaces'])->name('face-api-test.list-faces');
+        Route::post('face-api-test/test-enrollment', [FaceApiTestController::class, 'testEnrollment'])->name('face-api-test.test-enrollment');
+        Route::post('face-api-test/test-verification', [FaceApiTestController::class, 'testVerification'])->name('face-api-test.test-verification');
+        Route::post('face-api-test/test-identification', [FaceApiTestController::class, 'testIdentification'])->name('face-api-test.test-identification');
+        Route::post('face-api-test/test-comparison', [FaceApiTestController::class, 'testComparison'])->name('face-api-test.test-comparison');
+        Route::post('face-api-test/test-deletion', [FaceApiTestController::class, 'testDeletion'])->name('face-api-test.test-deletion');
     });
 });
 
