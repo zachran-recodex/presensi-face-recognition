@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = User::query()->with(['attendances']);
+        $query = User::query()->with(['attendances'])->where('role', '!=', 'super_admin');
 
         // Search functionality
         if ($request->filled('search')) {
@@ -51,13 +51,12 @@ class UserController extends Controller
 
         $users = $query->latest()->paginate(20)->withQueryString();
 
-        // Get statistics
+        // Get statistics (excluding super admin)
         $stats = [
-            'total_users' => User::count(),
-            'super_admin_users' => User::where('role', 'super_admin')->count(),
+            'total_users' => User::where('role', '!=', 'super_admin')->count(),
             'admin_users' => User::where('role', 'admin')->count(),
             'regular_users' => User::where('role', 'user')->count(),
-            'face_enrolled' => User::where('is_face_enrolled', true)->count(),
+            'face_enrolled' => User::where('is_face_enrolled', true)->where('role', '!=', 'super_admin')->count(),
         ];
 
         return view('admin.users.index', compact('users', 'stats'));
@@ -83,7 +82,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users'],
             'phone' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'in:super_admin,admin,user'],
+            'role' => ['required', 'in:admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -139,7 +138,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users,employee_id,'.$user->id],
             'phone' => ['nullable', 'string', 'max:20'],
-            'role' => ['required', 'in:super_admin,admin,user'],
+            'role' => ['required', 'in:admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
