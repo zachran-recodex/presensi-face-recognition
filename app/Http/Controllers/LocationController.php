@@ -17,7 +17,9 @@ class LocationController extends Controller
      */
     public function index(): View
     {
-        $locations = Location::latest()->paginate(10);
+        $locations = Location::withCount('assignedUsers')
+            ->latest()
+            ->paginate(10);
 
         return view('admin.locations.index', compact('locations'));
     }
@@ -55,9 +57,12 @@ class LocationController extends Controller
      */
     public function show(Location $location): View
     {
-        $location->load(['attendances' => function ($query) {
-            $query->with('user')->latest()->take(10);
-        }]);
+        $location->load([
+            'attendances' => function ($query) {
+                $query->with('user')->latest()->take(10);
+            },
+            'assignedUsers'
+        ]);
 
         return view('admin.locations.show', compact('location'));
     }

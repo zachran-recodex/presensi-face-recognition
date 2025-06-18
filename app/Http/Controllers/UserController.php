@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Location;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -65,7 +66,8 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return view('admin.users.create');
+        $locations = Location::active()->get();
+        return view('admin.users.create', compact('locations'));
     }
 
     /**
@@ -79,6 +81,7 @@ class UserController extends Controller
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users'],
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:admin,user'],
+            'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -99,6 +102,7 @@ class UserController extends Controller
             'attendances' => function ($query) {
                 $query->with('location')->latest()->take(10);
             },
+            'assignedLocation'
         ]);
 
         // Get user statistics
@@ -117,7 +121,8 @@ class UserController extends Controller
      */
     public function edit(User $user): View
     {
-        return view('admin.users.edit', compact('user'));
+        $locations = Location::active()->get();
+        return view('admin.users.edit', compact('user', 'locations'));
     }
 
     /**
@@ -131,6 +136,7 @@ class UserController extends Controller
             'employee_id' => ['nullable', 'string', 'max:50', 'unique:users,employee_id,'.$user->id],
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:admin,user'],
+            'location_id' => ['nullable', 'exists:locations,id'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -216,14 +222,4 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Toggle user status (if needed in the future)
-     */
-    public function toggleStatus(User $user): RedirectResponse
-    {
-        // This could be implemented if we add an 'active' status field
-        // For now, we don't have this functionality
-        return redirect()->route('admin.users.index')
-            ->withErrors(['error' => 'User status toggle not implemented']);
-    }
 }

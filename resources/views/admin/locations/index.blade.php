@@ -52,6 +52,9 @@
                             {{ __('Status') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ __('Assigned Users') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{ __('Actions') }}
                         </th>
                     </tr>
@@ -103,6 +106,9 @@
                                             {{ __('Inactive') }}
                                         </span>
                                 @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $location->assigned_users_count }} {{ __('employees') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">

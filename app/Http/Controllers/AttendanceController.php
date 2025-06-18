@@ -32,7 +32,9 @@ class AttendanceController extends Controller
             return $this->adminIndex();
         }
 
-        $locations = Location::active()->get();
+        $locations = $user->assignedLocation && $user->assignedLocation->is_active 
+            ? collect([$user->assignedLocation]) 
+            : collect();
         $todayAttendances = $user->getTodayAttendances();
         $hasCheckedIn = $user->hasCheckedInToday();
         $hasCheckedOut = $user->hasCheckedOutToday();
@@ -90,7 +92,14 @@ class AttendanceController extends Controller
                 ->withErrors(['error' => 'Please enroll your face first before attendance']);
         }
 
-        $locations = Location::active()->get();
+        $locations = $user->assignedLocation && $user->assignedLocation->is_active 
+            ? collect([$user->assignedLocation]) 
+            : collect();
+
+        if ($locations->isEmpty()) {
+            return redirect()->route('attendance.index')
+                ->withErrors(['error' => 'No location has been assigned to you. Please contact admin.']);
+        }
 
         return view('attendance.check-in', compact('locations'));
     }
@@ -161,6 +170,14 @@ class AttendanceController extends Controller
             if ($validated['type'] === 'check_in' && isset($validated['location_id'])) {
                 $location = Location::findOrFail($validated['location_id']);
 
+                // Check if user is assigned to this location
+                if (!$user->location_id || $user->location_id !== $location->id) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'You are not authorized to check in at this location',
+                    ], 422);
+                }
+
                 // Check if user is within location radius
                 if (isset($validated['latitude']) && isset($validated['longitude'])) {
                     if (! $location->isWithinRadius($validated['latitude'], $validated['longitude'])) {
@@ -172,10 +189,20 @@ class AttendanceController extends Controller
                 }
             }
 
-            // For check-out, use the same location as check-in
+            // For check-out, use the same location as check-in and validate proximity
             if ($validated['type'] === 'check_out') {
                 $checkInRecord = $user->getTodayCheckIn();
                 $location = $checkInRecord->location;
+
+                // Validate user is at the same location as check-in
+                if (isset($validated['latitude']) && isset($validated['longitude'])) {
+                    if (! $location->isWithinRadius($validated['latitude'], $validated['longitude'])) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'You must check-out from the same location as check-in. You are not within the required location radius.',
+                        ], 422);
+                    }
+                }
             }
 
             // Process face image

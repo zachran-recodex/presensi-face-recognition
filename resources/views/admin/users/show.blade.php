@@ -175,6 +175,56 @@
         </div>
     </div>
 
+    <!-- Location Assignment Display -->
+    @if($user->role === 'user')
+    <div class="mt-8">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">{{ __('Assigned Location') }}</h2>
+                    <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-600 hover:text-blue-700 text-sm">
+                        {{ __('Edit Location Assignment') }}
+                    </a>
+                </div>
+
+                @if($user->assignedLocation)
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-900">{{ $user->assignedLocation->name }}</div>
+                            <div class="text-sm text-gray-500">{{ $user->assignedLocation->address }}</div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                Radius: {{ $user->assignedLocation->radius }}m
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">{{ __('No location assigned') }}</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ __('This employee has not been assigned an attendance location yet.') }}
+                        </p>
+                        <div class="mt-4">
+                            <a href="{{ route('admin.users.edit', $user) }}" class="btn-primary">
+                                {{ __('Assign Location') }}
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Recent Attendances -->
     @if($user->attendances->count() > 0)
     <div class="mt-8">

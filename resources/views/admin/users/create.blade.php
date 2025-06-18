@@ -77,6 +77,27 @@
                         required />
                 </div>
 
+                <!-- Location Assignment (only for users) -->
+                <div x-data="{ role: '{{ old('role') }}' }">
+                    <div x-show="role === 'user'" x-transition>
+                        <x-forms.select
+                            name="location_id"
+                            label="{{ __('Assigned Location') }}"
+                            :options="collect($locations ?? [])->pluck('name', 'id')->prepend(__('No location assigned'), '')"
+                            :selected="old('location_id')"
+                            placeholder="{{ __('Select a location') }}" />
+                        <p class="text-xs text-gray-500 mt-1">
+                            {{ __('Only users with assigned locations can perform attendance check-in') }}
+                        </p>
+                    </div>
+                    
+                    <script>
+                        document.querySelector('select[name="role"]').addEventListener('change', function() {
+                            Alpine.store('role', this.value);
+                        });
+                    </script>
+                </div>
+
                 <!-- Password -->
                 <div>
                     <x-forms.input

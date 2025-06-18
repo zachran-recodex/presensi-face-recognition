@@ -6,6 +6,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'phone',
         'face_image',
         'is_face_enrolled',
+        'location_id',
     ];
 
     /**
@@ -59,6 +61,11 @@ class User extends Authenticatable
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    public function assignedLocation(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'location_id');
     }
 
     /**

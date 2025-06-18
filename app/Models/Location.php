@@ -30,6 +30,11 @@ class Location extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function assignedUsers(): HasMany
+    {
+        return $this->hasMany(User::class, 'location_id');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

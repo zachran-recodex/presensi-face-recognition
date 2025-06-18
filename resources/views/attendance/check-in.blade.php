@@ -28,20 +28,33 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <div class="p-6">
 
-                <!-- Location Selection -->
-                <div class="mb-6">
-                    <label for="locationSelect" class="block text-sm font-medium text-gray-700 mb-2">
-                        {{ __('Select Location') }}
-                    </label>
-                    <select id="locationSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">{{ __('Choose a location...') }}</option>
-                        @foreach($locations as $location)
-                            <option value="{{ $location->id }}" data-lat="{{ $location->latitude }}" data-lng="{{ $location->longitude }}" data-radius="{{ $location->radius }}">
-                                {{ $location->name }} - {{ $location->address }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <!-- Assigned Location Info -->
+                @if($locations->isNotEmpty())
+                    @php $location = $locations->first() @endphp
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ __('Check-in Location') }}
+                        </label>
+                        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">{{ $location->name }}</div>
+                                    <div class="text-sm text-gray-500">{{ $location->address }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">
+                                        {{ __('Required radius: :radius meters', ['radius' => $location->radius]) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="locationId" value="{{ $location->id }}" data-lat="{{ $location->latitude }}" data-lng="{{ $location->longitude }}" data-radius="{{ $location->radius }}">
+                    </div>
+                @endif
 
                 <!-- Location Status -->
                 <div id="locationStatus" class="hidden mb-6">
@@ -131,15 +144,13 @@
             const capturePhotoBtn = document.getElementById('capturePhoto');
             const retakePhotoBtn = document.getElementById('retakePhoto');
             const checkinForm = document.getElementById('checkinForm');
-            const locationSelect = document.getElementById('locationSelect');
 
             startCameraBtn.addEventListener('click', startCamera);
             capturePhotoBtn.addEventListener('click', capturePhoto);
             retakePhotoBtn.addEventListener('click', retakePhoto);
             checkinForm.addEventListener('submit', processCheckin);
-            locationSelect.addEventListener('change', handleLocationChange);
 
-            // Get user location
+            // Get user location and check proximity to assigned location
             getUserLocation();
         });
 
@@ -152,6 +163,9 @@
                             longitude: position.coords.longitude
                         };
                         console.log('User location:', userPosition);
+                        
+                        // Check proximity to assigned location
+                        checkLocationProximity();
                     },
                     (error) => {
                         console.warn('Geolocation error:', error);
@@ -161,16 +175,15 @@
             }
         }
 
-        function handleLocationChange() {
-            const selectedOption = document.getElementById('locationSelect').selectedOptions[0];
+        function checkLocationProximity() {
+            const locationElement = document.getElementById('locationId');
+            
+            if (locationElement && userPosition) {
+                const locationLat = parseFloat(locationElement.dataset.lat);
+                const locationLng = parseFloat(locationElement.dataset.lng);
+                const radius = parseInt(locationElement.dataset.radius);
 
-            if (selectedOption.value) {
-                const locationLat = parseFloat(selectedOption.dataset.lat);
-                const locationLng = parseFloat(selectedOption.dataset.lng);
-                const radius = parseInt(selectedOption.dataset.radius);
-
-                // Check if user is within location radius
-                if (userPosition && locationLat && locationLng) {
+                if (locationLat && locationLng) {
                     const distance = calculateDistance(
                         userPosition.latitude,
                         userPosition.longitude,
@@ -191,7 +204,7 @@
                                 <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
-                                You are within the location radius (${Math.round(distance)}m away)
+                                You are within the required location radius (${Math.round(distance)}m away)
                             </div>
                         `;
                     } else {
@@ -201,15 +214,11 @@
                                 <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
-                                You are too far from the location (${Math.round(distance)}m away, maximum ${radius}m)
+                                You are too far from the assigned location (${Math.round(distance)}m away, maximum ${radius}m required)
                             </div>
                         `;
                     }
-                } else {
-                    document.getElementById('locationStatus').classList.add('hidden');
                 }
-            } else {
-                document.getElementById('locationStatus').classList.add('hidden');
             }
         }
 
@@ -283,9 +292,9 @@
         async function processCheckin(e) {
             e.preventDefault();
 
-            const locationSelect = document.getElementById('locationSelect');
-            if (!locationSelect.value) {
-                showMessage('Please select a location', 'error');
+            const locationElement = document.getElementById('locationId');
+            if (!locationElement || !locationElement.value) {
+                showMessage('No location assigned. Please contact admin.', 'error');
                 return;
             }
 
@@ -303,7 +312,7 @@
             // Prepare form data
             const formData = {
                 type: 'check_in',
-                location_id: locationSelect.value,
+                location_id: locationElement.value,
                 face_image: capturedImageData,
                 notes: document.getElementById('notes').value
             };
