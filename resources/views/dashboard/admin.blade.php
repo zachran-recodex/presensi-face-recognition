@@ -79,6 +79,11 @@
                         <x-fas-right-to-bracket class="h-4 w-4 mr-1" />
                         {{ $todayAttendances->where('type', 'check_in')->where('is_verified', true)->count() }} berhasil
                     </p>
+                    @if($stats['late_check_in_today'] > 0)
+                        <p class="text-xs text-red-600 font-medium mt-1">
+                            {{ $stats['late_check_in_today'] }} terlambat
+                        </p>
+                    @endif
                 </div>
                 <div class="bg-purple-100 p-3 rounded-full">
                     <x-fas-right-to-bracket class="h-6 w-6 text-purple-500" />
@@ -96,6 +101,11 @@
                         <x-fas-right-from-bracket class="h-4 w-4 mr-1" />
                         {{ $todayAttendances->where('type', 'check_out')->where('is_verified', true)->count() }} berhasil
                     </p>
+                    @if($stats['late_check_out_today'] > 0)
+                        <p class="text-xs text-red-600 font-medium mt-1">
+                            {{ $stats['late_check_out_today'] }} pulang awal
+                        </p>
+                    @endif
                 </div>
                 <div class="bg-orange-100 p-3 rounded-full">
                     <x-fas-right-from-bracket class="h-6 w-6 text-orange-500" />
@@ -128,6 +138,9 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status Waktu
                                 </th>
                             </tr>
                         </thead>
@@ -167,6 +180,22 @@
                                         @else
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                 ✗ Not Verified
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($attendance->is_late)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                ⏰ 
+                                                @if($attendance->type === 'check_in')
+                                                    Terlambat {{ $attendance->late_minutes }}m
+                                                @else
+                                                    Pulang Awal {{ $attendance->late_minutes }}m
+                                                @endif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                ✓ Tepat Waktu
                                             </span>
                                         @endif
                                     </td>

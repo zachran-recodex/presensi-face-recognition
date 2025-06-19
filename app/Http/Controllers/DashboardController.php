@@ -51,6 +51,9 @@ class DashboardController extends Controller
             'check_in_today' => $todayAttendances->where('type', 'check_in')->count(),
             'check_out_today' => $todayAttendances->where('type', 'check_out')->count(),
             'verified_today' => $todayAttendances->where('is_verified', true)->count(),
+            'late_today' => $todayAttendances->where('is_late', true)->count(),
+            'late_check_in_today' => $todayAttendances->where('type', 'check_in')->where('is_late', true)->count(),
+            'late_check_out_today' => $todayAttendances->where('type', 'check_out')->where('is_late', true)->count(),
         ];
 
         return view('dashboard.admin', compact(
