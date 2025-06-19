@@ -229,23 +229,35 @@ class AttendanceController extends Controller
             $currentTime = now();
 
             if ($validated['type'] === 'check_in' && $user->check_in_time) {
-                $allowedCheckInTime = \Carbon\Carbon::createFromFormat('H:i', $user->check_in_time);
-                $currentTimeOnly = \Carbon\Carbon::createFromFormat('H:i', $currentTime->format('H:i'));
+                try {
+                    // Parse user's allowed check-in time
+                    $allowedTime = \Carbon\Carbon::parse($user->check_in_time);
+                    $currentTimeOnly = \Carbon\Carbon::parse($currentTime->format('H:i:s'));
 
-                if ($currentTimeOnly->greaterThan($allowedCheckInTime)) {
-                    $isLate = true;
-                    $lateMinutes = $currentTimeOnly->diffInMinutes($allowedCheckInTime);
+                    if ($currentTimeOnly->greaterThan($allowedTime)) {
+                        $isLate = true;
+                        $lateMinutes = $currentTimeOnly->diffInMinutes($allowedTime);
+                    }
+                } catch (\Exception $e) {
+                    // If time parsing fails, log it but continue without late detection
+                    \Log::warning('Failed to parse check-in time for user '.$user->id.': '.$e->getMessage());
                 }
             }
 
             if ($validated['type'] === 'check_out' && $user->check_out_time) {
-                $allowedCheckOutTime = \Carbon\Carbon::createFromFormat('H:i', $user->check_out_time);
-                $currentTimeOnly = \Carbon\Carbon::createFromFormat('H:i', $currentTime->format('H:i'));
+                try {
+                    // Parse user's allowed check-out time
+                    $allowedTime = \Carbon\Carbon::parse($user->check_out_time);
+                    $currentTimeOnly = \Carbon\Carbon::parse($currentTime->format('H:i:s'));
 
-                // For check-out, being late means leaving before the allowed time
-                if ($currentTimeOnly->lessThan($allowedCheckOutTime)) {
-                    $isLate = true;
-                    $lateMinutes = $allowedCheckOutTime->diffInMinutes($currentTimeOnly);
+                    // For check-out, being late means leaving before the allowed time
+                    if ($currentTimeOnly->lessThan($allowedTime)) {
+                        $isLate = true;
+                        $lateMinutes = $allowedTime->diffInMinutes($currentTimeOnly);
+                    }
+                } catch (\Exception $e) {
+                    // If time parsing fails, log it but continue without late detection
+                    \Log::warning('Failed to parse check-out time for user '.$user->id.': '.$e->getMessage());
                 }
             }
 
