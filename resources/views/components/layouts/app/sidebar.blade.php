@@ -43,6 +43,15 @@
 
                     </x-layouts.sidebar-two-level-link-parent>
 
+                    <!-- Attendance -->
+                    @if(auth()->user()->is_face_enrolled)
+                        @if(!auth()->user()->hasCheckedInToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-in') }}" icon='fas-right-to-bracket' :active="request()->routeIs('attendance.check-in')">Check In</x-layouts.sidebar-link>
+                        @elseif(!auth()->user()->hasCheckedOutToday())
+                            <x-layouts.sidebar-link href="{{ route('attendance.check-out') }}" icon='fas-right-from-bracket' :active="request()->routeIs('attendance.check-out')">Check Out</x-layouts.sidebar-link>
+                        @endif
+                    @endif
+
                     <!-- Face Recognition -->
                     @if(!auth()->user()->is_face_enrolled)
                         <x-layouts.sidebar-link href="{{ route('face.enroll') }}" icon='fas-user-plus' :active="request()->routeIs('face.enroll')">Daftarkan Wajah</x-layouts.sidebar-link>
