@@ -74,10 +74,18 @@
                     <p class="text-xs text-gray-500 mt-1">
                         @if($hasCheckedIn)
                             {{ $user->getTodayCheckIn()->attendance_time->translatedFormat('H:i') }}
+                            @if($user->getTodayCheckIn()->is_late)
+                                <span class="text-red-600 font-medium"> - Terlambat {{ $user->getTodayCheckIn()->late_minutes }}m</span>
+                            @endif
                         @else
                             Belum Check In
                         @endif
                     </p>
+                    @if($hasCheckedOut && $user->getTodayCheckOut()->is_late)
+                        <p class="text-xs text-red-600 font-medium mt-1">
+                            Check Out: {{ $user->getTodayCheckOut()->attendance_time->translatedFormat('H:i') }} - Pulang Awal {{ $user->getTodayCheckOut()->late_minutes }}m
+                        </p>
+                    @endif
                 </div>
                 <div class="bg-blue-100 p-3 rounded-full">
                     <x-fas-calendar-days class="h-6 w-6 text-blue-500" />
@@ -198,6 +206,9 @@
                                     {{ __('Status') }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {{ __('Late Status') }}
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     {{ __('Actions') }}
                                 </th>
                             </tr>
@@ -241,6 +252,22 @@
                                         @else
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                 ✗ {{ __('Not Verified') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($attendance->is_late)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                ⏰ 
+                                                @if($attendance->type === 'check_in')
+                                                    Terlambat ({{ $attendance->late_minutes }}m)
+                                                @else
+                                                    Pulang Awal ({{ $attendance->late_minutes }}m)
+                                                @endif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                ✓ Tepat Waktu
                                             </span>
                                         @endif
                                     </td>
