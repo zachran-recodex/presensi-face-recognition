@@ -1,21 +1,28 @@
-# Face Recognition Attendance System
+# 🎯 Face Recognition Attendance System
 
-A comprehensive attendance management system built with Laravel that uses face recognition technology powered by Biznet Face API for secure and accurate employee attendance tracking.
+A **comprehensive employee attendance management system** built with Laravel 12 that combines advanced **face recognition technology** with **GPS location validation** and **intelligent work schedule management**. Features automatic late detection, role-based access control, and real-time monitoring capabilities.
 
-## Features
+## ✨ Features
 
 ### 🎯 Core Features
-- **Face Recognition Authentication**: Secure attendance using Biznet Face API
-- **Real-time Check-in/Check-out**: GPS location validation with configurable radius
-- **Admin Dashboard**: Complete management interface for administrators
-- **User Dashboard**: Intuitive interface for employees
-- **Location Management**: Create and manage multiple attendance locations
-- **Attendance History**: Detailed records with filtering and export capabilities
-- **Mobile-Friendly**: Responsive design for mobile devices
+- **🔐 Biometric Authentication**: Advanced face recognition via Biznet Face API
+- **📍 GPS Location Validation**: Real-time location verification with configurable radius
+- **⏰ Work Schedule Management**: Individual check-in/check-out times with automatic late detection
+- **📊 Real-time Monitoring**: Live attendance tracking with comprehensive statistics
+- **🎨 Responsive Design**: Mobile-first interface optimized for all devices
+- **📈 Advanced Analytics**: Detailed reporting with punctuality tracking
 
-### 👥 User Roles
-- **Admin**: Full system access including location and user management
-- **User**: Personal attendance management and face enrollment
+### 👥 Multi-Role System
+- **🔧 Super Admin**: Complete system control and user management
+- **👨‍💼 Admin**: User management, attendance monitoring, and reporting
+- **👤 User**: Personal attendance management and face enrollment
+
+### ⏰ Smart Attendance Features
+- **🕐 Configurable Work Hours**: Set individual check-in/check-out times per employee
+- **📅 Automatic Late Detection**: Real-time calculation of tardiness in minutes
+- **🚨 Smart Notifications**: "Terlambat" for late arrival, "Pulang Awal" for early departure
+- **📊 Punctuality Tracking**: Historical late status with detailed analytics
+- **🎯 Real-time Validation**: Instant feedback on attendance status
 
 ### 📱 Mobile Features
 - Camera integration for face capture
@@ -197,16 +204,18 @@ After seeding, you can login with these accounts:
 
 ```
 users
-├── id, name, email, password
-├── role (admin/user)
-├── employee_id, phone
+├── id, name, username, email, password
+├── role (super_admin/admin/user)
+├── employee_id, phone, location_id
+├── check_in_time, check_out_time ⭐ NEW
 ├── face_image, is_face_enrolled
-└── face_gallery_id
+└── timestamps
 
 locations
 ├── id, name, address
 ├── latitude, longitude, radius
-└── is_active
+├── is_active
+└── timestamps
 
 attendances
 ├── id, user_id, location_id
@@ -214,7 +223,9 @@ attendances
 ├── attendance_time
 ├── latitude, longitude
 ├── face_image, confidence_level
-├── is_verified, notes
+├── is_verified
+├── is_late, late_minutes ⭐ NEW
+├── notes
 └── timestamps
 ```
 
@@ -222,32 +233,44 @@ attendances
 
 ### For Users
 
-1. **Registration**: Create account with employee details
-2. **Face Enrollment**:
+1. **🔐 Face Enrollment**:
     - Navigate to Face Recognition > Enroll Face
     - Follow on-screen instructions for optimal face capture
     - Ensure good lighting and face the camera directly
-3. **Daily Attendance**:
-    - Check In: Select location and capture face
-    - Check Out: Capture face to complete attendance
-4. **View History**: Access personal attendance records and statistics
+
+2. **📅 Daily Attendance**:
+    - **Check In**: Face capture with GPS validation
+    - **Check Out**: Face verification to complete attendance
+    - **Real-time Status**: Instant feedback on punctuality
+
+3. **📊 Personal Dashboard**:
+    - View attendance history with late status
+    - Monitor monthly attendance statistics
+    - Access detailed attendance records
 
 ### For Administrators
 
-1. **Location Management**:
+1. **👥 User Management**:
+    - Create/edit user accounts with role assignment
+    - **Configure work schedules**: Set individual check-in/check-out times
+    - Monitor face enrollment status and reset when needed
+    - Assign users to specific attendance locations
+
+2. **📍 Location Management**:
     - Create attendance locations with GPS coordinates
     - Set allowed radius for each location
     - Activate/deactivate locations as needed
 
-2. **User Management**:
-    - Monitor user face enrollment status
-    - View all attendance records
-    - Export reports for analysis
+3. **📊 Advanced Monitoring**:
+    - **Real-time dashboard**: Live attendance activity with late detection
+    - **Punctuality analytics**: Track late arrivals and early departures
+    - **Comprehensive reporting**: Attendance history with filtering
+    - **Statistics overview**: Daily/monthly attendance summaries
 
-3. **System Monitoring**:
-    - Dashboard overview of daily attendance
-    - Real-time verification statistics
-    - Location usage analytics
+4. **⏰ Work Schedule Management**:
+    - Set individual work hours per employee
+    - Monitor punctuality compliance
+    - Track late patterns and trends
 
 ## API Endpoints
 
@@ -265,9 +288,12 @@ attendances
 - `GET /attendance/history` - User attendance history
 
 ### Admin Routes
+- `GET /admin/users` - User management dashboard
+- `POST /admin/users` - Create new user with work schedule
+- `PUT /admin/users/{id}` - Update user and work hours
 - `GET /admin/locations` - Location management
 - `POST /admin/locations` - Create new location
-- `GET /admin/attendance/history` - All attendance records
+- `GET /admin/attendance/history` - All attendance records with late status
 - `POST /admin/locations/{id}/toggle-status` - Toggle location status
 
 ## Security Features
@@ -370,7 +396,17 @@ For support and questions:
 - **Biznet Face API**: [Biznet Gio Support](https://support.biznetgio.com/)
 - **Laravel**: [Laravel Documentation](https://laravel.com/docs)
 
-## Changelog
+## 📋 Changelog
+
+### Version 2.0.0 ⭐ LATEST
+- **⏰ Work Schedule Management**: Individual check-in/check-out time configuration
+- **🚨 Automatic Late Detection**: Real-time punctuality tracking with minute precision
+- **📊 Enhanced Dashboards**: Late status display across all attendance views
+- **🎯 Smart Validation**: Differentiated "Terlambat" vs "Pulang Awal" detection
+- **📈 Advanced Analytics**: Punctuality statistics and trend monitoring
+- **🔧 Improved User Management**: Work hour configuration in admin interface
+- **💫 Enhanced UI/UX**: Visual badges and status indicators for attendance
+- **🛠️ Bug Fixes**: Resolved time parsing errors and attendance detail views
 
 ### Version 1.0.0
 - Initial release with face recognition attendance
