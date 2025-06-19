@@ -236,7 +236,7 @@ class AttendanceController extends Controller
 
                     if ($currentTimeOnly->greaterThan($allowedTime)) {
                         $isLate = true;
-                        $lateMinutes = $currentTimeOnly->diffInMinutes($allowedTime);
+                        $lateMinutes = $allowedTime->diffInMinutes($currentTimeOnly);
                     }
                 } catch (\Exception $e) {
                     // If time parsing fails, log it but continue without late detection
@@ -253,7 +253,7 @@ class AttendanceController extends Controller
                     // For check-out, being late means leaving before the allowed time
                     if ($currentTimeOnly->lessThan($allowedTime)) {
                         $isLate = true;
-                        $lateMinutes = $allowedTime->diffInMinutes($currentTimeOnly);
+                        $lateMinutes = $currentTimeOnly->diffInMinutes($allowedTime);
                     }
                 } catch (\Exception $e) {
                     // If time parsing fails, log it but continue without late detection
