@@ -24,8 +24,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $name = fake()->name();
-        $username = strtolower(str_replace(' ', '', $name)) . fake()->unique()->numberBetween(1, 999);
-        
+        $username = strtolower(str_replace(' ', '', $name)).fake()->unique()->numberBetween(1, 999);
+
         return [
             'name' => $name,
             'username' => $username,

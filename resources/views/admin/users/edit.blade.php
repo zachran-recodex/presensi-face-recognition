@@ -118,6 +118,32 @@
                         </p>
                     </div>
                     
+                    <!-- Check-in and Check-out Time (only for users) -->
+                    <div x-show="role === 'user'" x-transition class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <x-forms.input
+                                name="check_in_time"
+                                type="time"
+                                label="{{ __('Check-in Time') }}"
+                                :value="old('check_in_time', $user->check_in_time)"
+                                placeholder="{{ __('Optional - e.g., 08:00') }}" />
+                            <p class="text-xs text-gray-500 mt-1">
+                                {{ __('Allowed check-in time for this user') }}
+                            </p>
+                        </div>
+                        <div>
+                            <x-forms.input
+                                name="check_out_time"
+                                type="time"
+                                label="{{ __('Check-out Time') }}"
+                                :value="old('check_out_time', $user->check_out_time)"
+                                placeholder="{{ __('Optional - e.g., 17:00') }}" />
+                            <p class="text-xs text-gray-500 mt-1">
+                                {{ __('Allowed check-out time for this user') }}
+                            </p>
+                        </div>
+                    </div>
+                    
                     <script>
                         document.querySelector('select[name="role"]').addEventListener('change', function() {
                             const roleDisplay = document.querySelector('[x-data]').__x.$data;

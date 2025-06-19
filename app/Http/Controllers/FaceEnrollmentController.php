@@ -51,13 +51,13 @@ class FaceEnrollmentController extends Controller
                     'message' => 'Face is already enrolled. Use the update option instead.',
                 ], 422);
             }
-            
+
             // Check if user is already enrolled in Face API (sync check)
             try {
                 $faceList = $this->faceService->listFaces();
                 $userId = (string) ($user->employee_id ?: $user->id);
                 $isEnrolledInAPI = false;
-                
+
                 if (isset($faceList['faces'])) {
                     foreach ($faceList['faces'] as $face) {
                         if ($face['user_id'] === $userId) {
@@ -66,11 +66,11 @@ class FaceEnrollmentController extends Controller
                         }
                     }
                 }
-                
+
                 if ($isEnrolledInAPI) {
                     // Sync database with API state
                     $user->update(['is_face_enrolled' => true]);
-                    
+
                     return response()->json([
                         'success' => false,
                         'message' => 'Face is already enrolled in the system. Database has been synchronized.',
@@ -115,7 +115,7 @@ class FaceEnrollmentController extends Controller
                     'employee_id' => $user->employee_id,
                     'api_response' => $enrollmentResult,
                 ]);
-                
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Face enrollment failed: '.($enrollmentResult['status_message'] ?? 'API returned an error. Status: '.($enrollmentResult['status'] ?? 'unknown')),
@@ -139,6 +139,7 @@ class FaceEnrollmentController extends Controller
                 'user_email' => auth()->user()->email,
                 'errors' => $e->validator->errors()->all(),
             ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error: '.implode(', ', $e->validator->errors()->all()),

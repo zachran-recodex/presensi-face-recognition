@@ -6,8 +6,6 @@ use App\Models\Attendance;
 use App\Models\Location;
 use App\Models\User;
 use App\Services\FaceRecognitionService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -55,7 +53,6 @@ class DashboardController extends Controller
             'verified_today' => $todayAttendances->where('is_verified', true)->count(),
         ];
 
-
         return view('dashboard.admin', compact(
             'todayAttendances',
             'totalUsers',
@@ -71,8 +68,8 @@ class DashboardController extends Controller
     private function userDashboard(Request $request): View
     {
         $user = auth()->user();
-        $locations = $user->assignedLocation && $user->assignedLocation->is_active 
-            ? collect([$user->assignedLocation]) 
+        $locations = $user->assignedLocation && $user->assignedLocation->is_active
+            ? collect([$user->assignedLocation])
             : collect();
         $todayAttendances = $user->getTodayAttendances();
         $hasCheckedIn = $user->hasCheckedInToday();
@@ -112,5 +109,4 @@ class DashboardController extends Controller
             'attendances'
         ));
     }
-
 }

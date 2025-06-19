@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('employee_id')->nullable()->unique();
             $table->string('phone')->nullable();
             $table->unsignedBigInteger('location_id')->nullable();
+            $table->time('check_in_time')->nullable();
+            $table->time('check_out_time')->nullable();
             $table->text('face_image')->nullable(); // base64 encoded face for enrollment
             $table->boolean('is_face_enrolled')->default(false);
             $table->timestamp('email_verified_at')->nullable();

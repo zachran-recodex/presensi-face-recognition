@@ -61,7 +61,7 @@ class LocationController extends Controller
             'attendances' => function ($query) {
                 $query->with('user')->latest()->take(10);
             },
-            'assignedUsers'
+            'assignedUsers',
         ]);
 
         return view('admin.locations.show', compact('location'));

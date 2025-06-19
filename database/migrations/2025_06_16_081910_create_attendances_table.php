@@ -22,6 +22,8 @@ return new class extends Migration
             $table->text('face_image')->nullable(); // base64 encoded image
             $table->decimal('confidence_level', 3, 2)->nullable(); // dari face recognition
             $table->boolean('is_verified')->default(false);
+            $table->boolean('is_late')->default(false);
+            $table->integer('late_minutes')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

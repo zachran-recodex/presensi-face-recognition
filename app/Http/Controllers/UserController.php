@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Location;
+use App\Models\User;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,6 +67,7 @@ class UserController extends Controller
     public function create(): View
     {
         $locations = Location::active()->get();
+
         return view('admin.users.create', compact('locations'));
     }
 
@@ -84,6 +84,8 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
+            'check_in_time' => ['nullable', 'date_format:H:i'],
+            'check_out_time' => ['nullable', 'date_format:H:i'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -104,7 +106,7 @@ class UserController extends Controller
             'attendances' => function ($query) {
                 $query->with('location')->latest()->take(10);
             },
-            'assignedLocation'
+            'assignedLocation',
         ]);
 
         // Get user statistics
@@ -124,6 +126,7 @@ class UserController extends Controller
     public function edit(User $user): View
     {
         $locations = Location::active()->get();
+
         return view('admin.users.edit', compact('user', 'locations'));
     }
 
@@ -140,6 +143,8 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', 'in:admin,user'],
             'location_id' => ['nullable', 'exists:locations,id'],
+            'check_in_time' => ['nullable', 'date_format:H:i'],
+            'check_out_time' => ['nullable', 'date_format:H:i'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -230,5 +235,4 @@ class UserController extends Controller
                 ->withErrors(['error' => 'Failed to reset face enrollment: '.$e->getMessage()]);
         }
     }
-
 }

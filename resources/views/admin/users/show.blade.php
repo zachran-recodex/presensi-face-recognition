@@ -90,6 +90,23 @@
                         </div>
                     </div>
 
+                    @if($user->role === 'user')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ __('Check-in Time') }}</label>
+                            <p class="mt-1 text-gray-900">
+                                {{ $user->check_in_time ? \Carbon\Carbon::createFromFormat('H:i:s', $user->check_in_time)->format('H:i') : __('Not set') }}
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ __('Check-out Time') }}</label>
+                            <p class="mt-1 text-gray-900">
+                                {{ $user->check_out_time ? \Carbon\Carbon::createFromFormat('H:i:s', $user->check_out_time)->format('H:i') : __('Not set') }}
+                            </p>
+                        </div>
+                    </div>
+                    @endif
+
                     @if($user->email_verified_at)
                     <div>
                         <label class="block text-sm font-medium text-gray-700">{{ __('Email Verified') }}</label>

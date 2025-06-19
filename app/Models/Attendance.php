@@ -21,6 +21,8 @@ class Attendance extends Model
         'face_image',
         'confidence_level',
         'is_verified',
+        'is_late',
+        'late_minutes',
         'notes',
     ];
 
@@ -30,6 +32,7 @@ class Attendance extends Model
         'longitude' => 'decimal:8',
         'confidence_level' => 'decimal:2',
         'is_verified' => 'boolean',
+        'is_late' => 'boolean',
     ];
 
     public function user(): BelongsTo

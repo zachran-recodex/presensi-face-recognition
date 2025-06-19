@@ -83,7 +83,7 @@ class FaceRecognitionService
             $responseData = $response->json();
             if (isset($responseData['risetai']['status']) &&
                 ($responseData['risetai']['status'] == '400' || $responseData['risetai']['status'] == '417')) {
-                
+
                 // Get current gallery info and list of all galleries
                 try {
                     $galleriesList = $this->getMyGalleries();
@@ -92,27 +92,27 @@ class FaceRecognitionService
                     if (isset($facesList['faces']) && is_array($facesList['faces'])) {
                         $faceCount = count($facesList['faces']);
                     }
-                    
+
                     return [
-                        'status' => '200', 
+                        'status' => '200',
                         'message' => 'Gallery already exists',
                         'gallery_info' => [
                             'current_gallery' => $this->faceGalleryId,
                             'total_faces_in_current' => $faceCount,
                             'all_my_galleries' => $galleriesList,
-                            'api_response' => $responseData['risetai'] ?? $responseData
-                        ]
+                            'api_response' => $responseData['risetai'] ?? $responseData,
+                        ],
                     ];
                 } catch (\Exception $e) {
                     // If can't get galleries/faces list, just return basic response
                     return [
-                        'status' => '200', 
+                        'status' => '200',
                         'message' => 'Gallery already exists',
                         'gallery_info' => [
                             'current_gallery' => $this->faceGalleryId,
                             'api_response' => $responseData['risetai'] ?? $responseData,
-                            'note' => 'Could not fetch additional gallery info: ' . $e->getMessage()
-                        ]
+                            'note' => 'Could not fetch additional gallery info: '.$e->getMessage(),
+                        ],
                     ];
                 }
             }
@@ -138,7 +138,7 @@ class FaceRecognitionService
                 'image' => $processedImage,
                 'trx_id' => $this->generateTrxId(),
             ];
-            
+
             Log::info('Face API enroll request', [
                 'user_id' => $userId,
                 'user_name' => $userName,
@@ -155,7 +155,7 @@ class FaceRecognitionService
                 ->post("{$this->baseUrl}/facegallery/enroll-face");
 
             $responseData = $response->json();
-            
+
             Log::info('Face API enroll response', [
                 'status_code' => $response->status(),
                 'response_data' => $responseData,

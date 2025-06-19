@@ -26,7 +26,7 @@ class FaceApiTestController extends Controller
         $config = [
             'base_url' => config('services.biznet_face.base_url'),
             'access_token' => config('services.biznet_face.access_token') ?
-                substr(config('services.biznet_face.access_token'), 0, 10) . '...' : 'NOT SET',
+                substr(config('services.biznet_face.access_token'), 0, 10).'...' : 'NOT SET',
             'gallery_id' => config('services.biznet_face.face_gallery_id'),
         ];
 
@@ -54,7 +54,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'API connection failed: ' . $e->getMessage(),
+                'message' => 'API connection failed: '.$e->getMessage(),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -76,7 +76,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get counters: ' . $e->getMessage(),
+                'message' => 'Failed to get counters: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -97,7 +97,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create gallery: ' . $e->getMessage(),
+                'message' => 'Failed to create gallery: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -118,7 +118,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get my galleries: ' . $e->getMessage(),
+                'message' => 'Failed to get my galleries: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -139,7 +139,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to list faces: ' . $e->getMessage(),
+                'message' => 'Failed to list faces: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -172,7 +172,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Face enrollment test failed: ' . $e->getMessage(),
+                'message' => 'Face enrollment test failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -203,7 +203,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Face verification test failed: ' . $e->getMessage(),
+                'message' => 'Face verification test failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -230,7 +230,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Face identification test failed: ' . $e->getMessage(),
+                'message' => 'Face identification test failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -259,7 +259,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Face comparison test failed: ' . $e->getMessage(),
+                'message' => 'Face comparison test failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -284,7 +284,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Face deletion test failed: ' . $e->getMessage(),
+                'message' => 'Face deletion test failed: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -301,7 +301,7 @@ class FaceApiTestController extends Controller
 
             // Read current .env file
             $envPath = base_path('.env');
-            if (!file_exists($envPath)) {
+            if (! file_exists($envPath)) {
                 return response()->json([
                     'success' => false,
                     'message' => '.env file not found',
@@ -309,16 +309,16 @@ class FaceApiTestController extends Controller
             }
 
             $envContent = file_get_contents($envPath);
-            
+
             // Update or add BIZNET_FACE_GALLERY_ID
             if (preg_match('/^BIZNET_FACE_GALLERY_ID=.*$/m', $envContent)) {
                 $envContent = preg_replace(
                     '/^BIZNET_FACE_GALLERY_ID=.*$/m',
-                    'BIZNET_FACE_GALLERY_ID=' . $validated['gallery_id'],
+                    'BIZNET_FACE_GALLERY_ID='.$validated['gallery_id'],
                     $envContent
                 );
             } else {
-                $envContent .= "\nBIZNET_FACE_GALLERY_ID=" . $validated['gallery_id'];
+                $envContent .= "\nBIZNET_FACE_GALLERY_ID=".$validated['gallery_id'];
             }
 
             // Write back to .env file
@@ -343,7 +343,7 @@ class FaceApiTestController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update Face Gallery ID: ' . $e->getMessage(),
+                'message' => 'Failed to update Face Gallery ID: '.$e->getMessage(),
             ], 500);
         }
     }

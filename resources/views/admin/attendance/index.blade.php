@@ -132,6 +132,9 @@
                                 {{ __('Status') }}
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Late Status') }}
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Confidence') }}
                             </th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -178,6 +181,17 @@
                                     {{ $attendance->is_verified ? 'bg-green-100 text-green-800/20' : 'bg-yellow-100 text-yellow-800' }}">
                                     {{ $attendance->is_verified ? __('Verified') : __('Pending') }}
                                 </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($attendance->is_late)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        ⏰ {{ __('Late') }} ({{ $attendance->late_minutes }}m)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        ✓ {{ __('On Time') }}
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if($attendance->confidence_level)

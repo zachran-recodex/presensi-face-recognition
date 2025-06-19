@@ -89,22 +89,14 @@
         </div>
     </div>
 
-    <!-- Export Actions -->
-    <div class="mb-4 flex justify-between items-center">
+    <!-- Results Info -->
+    <div class="mb-4">
         <div class="text-sm text-gray-600">
             {{ __('Showing :from to :to of :total results', [
                 'from' => $attendances->firstItem() ?: 0,
                 'to' => $attendances->lastItem() ?: 0,
                 'total' => $attendances->total()
             ]) }}
-        </div>
-        <div class="flex space-x-2">
-            <button onclick="exportData('csv')" class="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg">
-                {{ __('Export CSV') }}
-            </button>
-            <button onclick="exportData('excel')" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg">
-                {{ __('Export Excel') }}
-            </button>
         </div>
     </div>
 
@@ -129,6 +121,9 @@
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{ __('Status') }}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {{ __('Late Status') }}
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             {{ __('Confidence') }}
@@ -208,6 +203,17 @@
                                         </span>
                                 @endif
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($attendance->is_late)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        ⏰ {{ __('Late') }} ({{ $attendance->late_minutes }}m)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        ✓ {{ __('On Time') }}
+                                    </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if($attendance->confidence_level)
                                     <div class="flex items-center">
@@ -248,19 +254,4 @@
             </div>
         @endif
     </div>
-
-    <script>
-        function exportData(format) {
-            const params = new URLSearchParams(window.location.search);
-            params.set('export', format);
-
-            // Create a temporary link to download the file
-            const link = document.createElement('a');
-            link.href = window.location.pathname + '?' + params.toString();
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
 </x-layouts.app>
